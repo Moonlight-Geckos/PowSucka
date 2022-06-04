@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterSpeed: 9
-  rotationSpeed: 8
+  rotationSpeed: 14
   characterTransform: {fileID: 4388609431186002121}
 --- !u!65 &503252739
 BoxCollider:

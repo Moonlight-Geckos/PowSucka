@@ -7,9 +7,6 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float shootingCooldown;
 
-    [SerializeField]
-    private float movementSpeed;
-
     private Animator _animator;
     private Transform _playerTransform;
     private bool _isShooting = false;
@@ -18,43 +15,58 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        Initialize();
+    }
+
+    public void Initialize()
+    {
         _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         _navMeshAgent = GetComponent<NavMeshAgent>();
-        _navMeshAgent.isStopped = false;
-        _navMeshAgent.speed = movementSpeed;
-        _navMeshAgent.destination = _playerTransform.position;
         _animator = GetComponent<Animator>();
+        _isShooting = false;
+        countdownCooldown = 0;
+        _navMeshAgent.isStopped = false;
+        _navMeshAgent.destination = _playerTransform.position;
     }
     private void Update()
     {
         transform.LookAt(_playerTransform.position);
-        _navMeshAgent.destination = _playerTransform.position;
         if (countdownCooldown > 0)
             countdownCooldown -= Time.deltaTime;
-        if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
+
+        _navMeshAgent.destination = _playerTransform.position;
+        if (_navMeshAgent.hasPath && _navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
         {
-            _navMeshAgent.isStopped = true;
-            _navMeshAgent.velocity = Vector3.zero;
-            _isShooting = true;
-            _animator.SetBool("Idle", _isShooting);
+            StopChasing();
         }
         else if(_isShooting && countdownCooldown <= 0)
         {
-            _navMeshAgent.isStopped = false;
-            _navMeshAgent.destination = _playerTransform.position;
-            _isShooting = false;
-            _animator.SetBool("Idle", _isShooting);
+            StartChasing();
         }
         if (_isShooting)
         {
-            if (countdownCooldown <= 0)
-            {
-                Shoot();
-            }
+            TryShoot();
         }
     }
-    void Shoot()
+    void StartChasing()
     {
+        _navMeshAgent.isStopped = false;
+        _navMeshAgent.destination = _playerTransform.position;
+        _isShooting = false;
+        _animator.SetBool("Idle", _isShooting);
+    }
+    void StopChasing()
+    {
+        _navMeshAgent.isStopped = true;
+        _navMeshAgent.velocity = Vector3.zero;
+        _isShooting = true;
+        _animator.SetBool("Idle", _isShooting);
+    }
+
+    void TryShoot()
+    {
+        if (countdownCooldown > 0)
+            return;
         _animator.SetTrigger("Shoot");
         Debug.DrawLine(_playerTransform.position, transform.position, Color.red, 0.5f);
         countdownCooldown = shootingCooldown;
