@@ -9467,7 +9467,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c7394f8ec2293b428554e7c892a3574, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPool: {fileID: 11400000, guid: 9eb35fbf28de10947b859110afdac6f3, type: 2}
+  enemyPools:
+  - {fileID: 11400000, guid: ee06ca64033f48a40ac69495985d7e1c, type: 2}
+  - {fileID: 11400000, guid: 9eb35fbf28de10947b859110afdac6f3, type: 2}
+  - {fileID: 11400000, guid: 75e1a2e206a9b944f82ccd7aee96159e, type: 2}
+  spawnProbabilities:
+  - probablity: 0.5
+  - probablity: 0.3
+  - probablity: 0.3
 --- !u!1 &1879003694
 GameObject:
   m_ObjectHideFlags: 0
@@ -11119,6 +11126,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoubleCanonEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 6653715433774746352, guid: c956685dcf79f044e885c5bd0c7d68b8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c956685dcf79f044e885c5bd0c7d68b8, type: 3}
 --- !u!1001 &6769044947485648947
@@ -11132,6 +11144,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ShooterEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850478649724151559, guid: 4231b72e16009b944ab0392e98cbac76,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6519738885463932349, guid: 4231b72e16009b944ab0392e98cbac76,
         type: 3}
@@ -11151,7 +11168,7 @@ PrefabInstance:
     - target: {fileID: 6519738885463932349, guid: 4231b72e16009b944ab0392e98cbac76,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 40
+      value: 35.4
       objectReference: {fileID: 0}
     - target: {fileID: 6519738885463932349, guid: 4231b72e16009b944ab0392e98cbac76,
         type: 3}

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fece417974f7e646927ee1b87150c62, type: 3}
-  m_Name: New Game Object Pool
+  m_Name: DoubleCanonEnemyPool
   m_EditorClassIdentifier: 
-  pickupPrefab: {fileID: 207057427905573353, guid: eb9c44fafaee7734fa6fbdc90f702802,
+  pickupPrefab: {fileID: 6653715433774746352, guid: c956685dcf79f044e885c5bd0c7d68b8,
     type: 3}
   maxPoolSize: 100

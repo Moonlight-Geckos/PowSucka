@@ -1385,6 +1385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootingCooldown: 0.75
+  aimDuration: 1
 --- !u!1 &7653514725575710323
 GameObject:
   m_ObjectHideFlags: 0

@@ -596,7 +596,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6519738885463932349
 Transform:
   m_ObjectHideFlags: 0
@@ -670,6 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootingCooldown: 0.75
+  aimDuration: 1
 --- !u!1 &5977818327906600028
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,9 +8,13 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float shootingCooldown;
 
+    [SerializeField]
+    private float aimDuration;
+
     private Animator _animator;
     private Transform _playerTransform;
     private bool _isShooting = false;
+    private bool _coroutineRunning = false;
     private NavMeshAgent _navMeshAgent;
     private float countdownCooldown;
 
@@ -39,7 +44,7 @@ public class Enemy : MonoBehaviour
         {
             StopChasing();
         }
-        else if(_isShooting && countdownCooldown <= 0)
+        else if(_isShooting && countdownCooldown <= 0 && !_coroutineRunning)
         {
             StartChasing();
         }
@@ -65,11 +70,20 @@ public class Enemy : MonoBehaviour
 
     void TryShoot()
     {
-        if (countdownCooldown > 0)
+        if (countdownCooldown > 0 || _coroutineRunning)
             return;
-        _animator.SetTrigger("Shoot");
-        Debug.DrawLine(_playerTransform.position, transform.position, Color.red, 0.5f);
-        countdownCooldown = shootingCooldown;
+        IEnumerator shoot()
+        {
+            _coroutineRunning = true;
+            _animator.SetTrigger("Aim");
+            yield return new WaitForSeconds(aimDuration);
+            _animator.SetTrigger("Shoot");
+            Debug.DrawLine(_playerTransform.position, transform.position, Color.red, 0.2f);
+            countdownCooldown = shootingCooldown;
+            yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);
+            _coroutineRunning = false;
+        }
+        StartCoroutine(shoot());
     }
     private void OnDrawGizmos()
     {
