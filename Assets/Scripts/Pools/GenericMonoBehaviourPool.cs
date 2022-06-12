@@ -63,22 +63,19 @@ public abstract class GenericMonoBehaviourPool<T> : ScriptableObject
         obj.transform.parent = itemsParent.transform;
         return obj.GetComponent<T>();
     }
-
-    void OnReturnedToPool(T prj)
+    protected virtual void OnReturnedToPool(T obj)
     {
-        prj.gameObject.SetActive(false);
+        obj.gameObject.SetActive(false);
     }
-
-    void OnTakeFromPool(T obj)
+    protected virtual void OnTakeFromPool(T obj)
     {
         obj.gameObject.SetActive(true);
     }
-    void OnDestroyPoolObject(T obj)
+    protected virtual void OnDestroyPoolObject(T obj)
     {
         Destroy(obj.gameObject);
     }
-
-    private void ClearPool()
+    protected virtual private void ClearPool()
     {
         _pool.Clear();
     }

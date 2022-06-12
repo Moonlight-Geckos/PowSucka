@@ -703,10 +703,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePools:
   - {fileID: 11400000, guid: c6644bd4ba7c1514697042b64efe55d8, type: 2}
-  projectileSpeed: 30
+  projectileSpeed: 22
   shootingCooldown: 0.3
   aimDuration: 0.1
-  zAdditionalRadius: 7
+  zAdditionalRadius: 12
   gizmosMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   startBulletTransform: {fileID: 727822976}
 --- !u!1 &5977818327906600028

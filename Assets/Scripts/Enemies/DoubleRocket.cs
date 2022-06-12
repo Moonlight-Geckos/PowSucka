@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoubleCanon : Enemy
+public class DoubleRocket : Enemy
 {
+    [SerializeField]
+    private float arcDistance = 10f;
+
     [SerializeField]
     private Transform startTargetLeft;
 
     [SerializeField]
     private Transform startTargetRight;
-
 
     private Projectile _projectileLeft;
     private Projectile _projectileRight;
@@ -50,8 +52,14 @@ public class DoubleCanon : Enemy
             _projectileDirection = _playerTransform.position - transform.position;
             _projectileDirection.y = 0;
 
-            _projectileRight.Shoot(_projectileDirection.normalized * projectileSpeed);
-            _projectileLeft.Shoot(_projectileDirection.normalized * projectileSpeed);
+            _projectileRight.Shoot((_projectileDirection + transform.right * 40).normalized * projectileSpeed,
+                new Bezier(_projectileRight.transform.position,
+                _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.PlayerTransform.position, transform.position) / 2)) + (transform.right * arcDistance),
+                GameManager.PlayerTransform.position));
+            _projectileLeft.Shoot((_projectileDirection - transform.right * 40).normalized * projectileSpeed,
+                new Bezier(_projectileRight.transform.position,
+                _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.PlayerTransform.position, transform.position)/2)) - (transform.right * arcDistance),
+                GameManager.PlayerTransform.position));
 
             countdownCooldown = shootingCooldown;
             yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);

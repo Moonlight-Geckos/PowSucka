@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bomb : Projectile
 {
-    public override void Shoot(Vector3 velocity)
+    public override void Shoot(Vector3 velocity, Bezier _bezierCurve = null)
     {
         base.Shoot(velocity);
         _animator.speed = 1;

@@ -20,7 +20,7 @@ public class PlayerControl : MonoBehaviour
 
     private Joystick _joystick;
     private Rigidbody _mainRigidbody;
-    private Animator _characterAnimator;
+    private CharacterCustomizer _characterCustomizer;
     private float _angle;
     private bool _isRunning;
     private Vector3 newVelocity;
@@ -30,7 +30,7 @@ public class PlayerControl : MonoBehaviour
     {
         _joystick = FindObjectOfType<Joystick>();
         _mainRigidbody = GetComponent<Rigidbody>();
-        _characterAnimator = characterTransform.GetComponent<Animator>();
+        _characterCustomizer = characterTransform.GetComponentInChildren<CharacterCustomizer>();
     }
 
     private void Update()
@@ -43,7 +43,7 @@ public class PlayerControl : MonoBehaviour
             if (_isRunning)
             {
                 _isRunning = false;
-                _characterAnimator.SetBool("Running", _isRunning);
+                _characterCustomizer.Run(_isRunning);
             }
             _mainRigidbody.velocity = Vector3.zero;
             return;
@@ -62,7 +62,7 @@ public class PlayerControl : MonoBehaviour
         if (!_isRunning)
         {
             _isRunning = true;
-            _characterAnimator.SetBool("Running", _isRunning);
+            _characterCustomizer.Run(_isRunning);
         }
         _angle = Vector3.Angle(_joystick.Direction, new Vector2(0, 1)) * ((_joystick.Direction.x < new Vector2(0, 1).x) ? -1.0f : 1.0f);
 

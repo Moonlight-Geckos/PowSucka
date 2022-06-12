@@ -5,6 +5,9 @@ public class GameManager : MonoBehaviour
 {
     #region Serialized
 
+    [SerializeField]
+    private float suctionVelocity = 30;
+
     #endregion
 
     #region Private
@@ -38,6 +41,13 @@ public class GameManager : MonoBehaviour
         get
         {
             return collectedGems;
+        }
+    }
+    public float SuctionVelocity
+    {
+        get
+        {
+            return suctionVelocity;
         }
     }
 
