@@ -145,6 +145,7 @@ public abstract class Projectile : MonoBehaviour
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Vacuum"))
         {
+            Debug.LogWarning("Got triggered to suction");
             GetSucked();
         }
         else
