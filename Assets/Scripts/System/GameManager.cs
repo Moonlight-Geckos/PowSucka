@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
     #region Serialized
 
     [SerializeField]
+    private float timeToSpawnBoss = 30;
+
+    [SerializeField]
     private float suctionVelocity = 30;
 
     #endregion
@@ -14,27 +17,31 @@ public class GameManager : MonoBehaviour
 
     private static Transform playerTransform;
     private static GameManager _instance;
-    private static UnityEvent clearPoolsEvent = new UnityEvent();
     private static int collectedGems;
     private static bool started;
-    #endregion
+    private static float _timeSinceStarted = 0;
 
-    static public Transform PlayerTransform
-    {
-        get { return playerTransform; }
-    }
-    static public bool Started
-    {
-        get { return started; }
-        set { started = value; }
-    }
+    #endregion
     static public GameManager Instance
     {
         get { return _instance; }
     }
-    static public UnityEvent ClearPoolsEvent
+    public Transform PlayerTransform
     {
-        get { return clearPoolsEvent; }
+        get { return playerTransform; }
+    }
+    public bool Started
+    {
+        get { return started; }
+        set { started = value; }
+    }
+    public float TimeSinceStarted
+    {
+        get { return _timeSinceStarted; }
+    }
+    public float TimeToSpawnBoss
+    {
+        get { return timeToSpawnBoss; }
     }
     public int CollectedGems
     {
@@ -60,14 +67,16 @@ public class GameManager : MonoBehaviour
         else
         {
             _instance = this;
-            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
             started = false;
+            _timeSinceStarted = 0;
+            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         }
     }
 
     void Update()
     {
         TimersPool.UpdateTimers(Time.deltaTime);
+        _timeSinceStarted += Time.deltaTime;
     }
     public void AddGem()
     {

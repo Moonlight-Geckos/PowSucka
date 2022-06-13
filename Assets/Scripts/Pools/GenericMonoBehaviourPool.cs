@@ -39,7 +39,7 @@ public abstract class GenericMonoBehaviourPool<T> : ScriptableObject
                     OnDestroyPoolObject,
                     true,
                     maxPoolSize);
-                GameManager.ClearPoolsEvent.AddListener(ClearPool);
+                EventsPool.ClearPoolsEvent.AddListener(ClearPool);
             }
 
             return _pool;

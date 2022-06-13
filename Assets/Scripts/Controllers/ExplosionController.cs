@@ -5,12 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public class ExplosionController : ParticleSystemController
 {
-    [SerializeField]
-    private float explosionDamage = 4;
     private void OnTriggerEnter(Collider other)
     {
-        if (!_canBehave)
-            return;
-        other.GetComponent<IDamagable>()?.GetDamage(explosionDamage);
+        other.GetComponent<IDamagable>()?.GetDamage(_damage);
     }
 }

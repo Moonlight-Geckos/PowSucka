@@ -54,12 +54,12 @@ public class DoubleRocket : Enemy
 
             _projectileRight.Shoot((_projectileDirection + transform.right * 40).normalized * projectileSpeed,
                 new Bezier(_projectileRight.transform.position,
-                _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.PlayerTransform.position, transform.position) / 2)) + (transform.right * arcDistance),
-                GameManager.PlayerTransform.position));
+                _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.Instance.PlayerTransform.position, transform.position) / 2)) + (transform.right * arcDistance),
+                GameManager.Instance.PlayerTransform.position));
             _projectileLeft.Shoot((_projectileDirection - transform.right * 40).normalized * projectileSpeed,
                 new Bezier(_projectileRight.transform.position,
-                _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.PlayerTransform.position, transform.position)/2)) - (transform.right * arcDistance),
-                GameManager.PlayerTransform.position));
+                _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.Instance.PlayerTransform.position, transform.position)/2)) - (transform.right * arcDistance),
+                GameManager.Instance.PlayerTransform.position));
 
             countdownCooldown = shootingCooldown;
             yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);

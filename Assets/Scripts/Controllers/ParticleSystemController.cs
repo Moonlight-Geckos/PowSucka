@@ -3,8 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(ParticleSystem))]
 public class ParticleSystemController : MonoBehaviour
 {
-    protected bool _canBehave = true;
-    public void Initialize(bool c) => _canBehave = c;
+    protected float _damage = 0;
+    public void Initialize(float d) => _damage = d;
     private void Awake()
     {
         var system = GetComponent<ParticleSystem>().main;
@@ -12,6 +12,7 @@ public class ParticleSystemController : MonoBehaviour
     }
     void OnParticleSystemStopped()
     {
+        _damage = 0;
         GetComponent<IDisposable>()?.Dispose();
     }
 }

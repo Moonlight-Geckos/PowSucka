@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
-  durationToExpire: 3
+  durationToExpire: 4
   arcRadius: 4
   explosionParticlesPool: {fileID: 11400000, guid: c6c0a6fcadda6444a9ff9f25507c3257,
     type: 2}

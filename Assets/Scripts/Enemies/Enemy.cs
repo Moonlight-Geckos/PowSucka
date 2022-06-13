@@ -70,7 +70,7 @@ public abstract class Enemy : MonoBehaviour
         _isShooting = false;
         countdownCooldown = 0;
         _navMeshAgent.isStopped = false;
-        _playerTransform = GameManager.PlayerTransform;
+        _playerTransform = GameManager.Instance.PlayerTransform;
         _navMeshAgent.destination = _playerTransform.position;
     }
     private void OnDrawGizmosSelected()
