@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e2c1f2ec55d084f8fb2af992f5fecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0
+  damage: 10
   durationToExpire: 1.75
   arcRadius: 0
   explosionParticlesPool: {fileID: 11400000, guid: c6c0a6fcadda6444a9ff9f25507c3257,

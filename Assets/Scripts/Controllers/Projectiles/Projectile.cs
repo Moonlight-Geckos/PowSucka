@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Projectile : MonoBehaviour
+public abstract class Projectile : MonoBehaviour, ISuckable
 {
     [SerializeField]
     protected float damage;
@@ -22,6 +22,7 @@ public abstract class Projectile : MonoBehaviour
     protected Bezier _bezierCurve;
     protected bool _sucked = false;
     private IDisposable _disposable;
+    private Vector3 _newScale;
 
     #region Curving
     Vector3 nextPos;
@@ -83,7 +84,8 @@ public abstract class Projectile : MonoBehaviour
     }
     protected virtual void TimerFinished()
     {
-        Explode(true);
+        if(!_sucked)
+            Explode(true);
     }
     protected virtual void Explode(bool shouldDamage)
     {
@@ -99,29 +101,30 @@ public abstract class Projectile : MonoBehaviour
             ps.transform.position = pos;
         }
     }
-    protected virtual void GetSucked()
+    public void GetSucked()
     {
         if (_sucked || !_timer.Running)
             return;
         _sucked = true;
-        _suctionDistance = Vector3.Distance(transform.position, GameManager.Instance.PlayerTransform.position);
+        _suctionDistance = Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position);
     }
     protected abstract void HitPlayer(Collider other);
     protected virtual void ScaleWithVacuum()
     {
-        transform.localScale = Vector3.Lerp(
+        _newScale = Vector3.Lerp(
             Vector3.one,
             Vector3.zero,
             Mathf.Clamp(
-                1.2f - (Vector3.Distance(transform.position, GameManager.Instance.PlayerTransform.position) / _suctionDistance),
+                1.2f - (Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position) / _suctionDistance),
                 0, 1)
             );
+        if (_newScale.x < transform.localScale.x) transform.localScale = _newScale;
         if (_trailRenderer != null)
             _trailRenderer.widthMultiplier = transform.localScale.x;
     }
     protected virtual void FollowVacuum()
     {
-        _rb.velocity = GameManager.Instance.SuctionVelocity * (GameManager.Instance.PlayerTransform.position - transform.position).normalized;
+        _rb.velocity = GameManager.Instance.SuctionVelocity * (GameManager.Instance.VacuumTransform.position - transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(_rb.velocity.normalized, Vector3.up);
     }
     protected virtual void CurveProjectile()
@@ -145,7 +148,6 @@ public abstract class Projectile : MonoBehaviour
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Vacuum"))
         {
-            Debug.LogWarning("Got triggered to suction");
             GetSucked();
         }
         else
@@ -156,7 +158,7 @@ public abstract class Projectile : MonoBehaviour
             }
             else
             {
-                EventsPool.PickedupProjectileEvent.Invoke(this);
+                EventsPool.PickedupObjectEvent.Invoke(GetType());
                 Expire();
             }
         }

@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     #region Private
 
     private static Transform playerTransform;
+    private static Transform vacuumTransform;
     private static GameManager _instance;
     private static int collectedGems;
     private static bool started;
@@ -29,6 +30,10 @@ public class GameManager : MonoBehaviour
     public Transform PlayerTransform
     {
         get { return playerTransform; }
+    }
+    public Transform VacuumTransform
+    {
+        get { return vacuumTransform; }
     }
     public bool Started
     {
@@ -57,7 +62,6 @@ public class GameManager : MonoBehaviour
             return suctionVelocity;
         }
     }
-
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -70,9 +74,9 @@ public class GameManager : MonoBehaviour
             started = false;
             _timeSinceStarted = 0;
             playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+            vacuumTransform = GameObject.FindGameObjectWithTag("Vacuum").transform;
         }
     }
-
     void Update()
     {
         TimersPool.UpdateTimers(Time.deltaTime);

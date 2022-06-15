@@ -66,6 +66,8 @@ public class EnemySpawner : MonoBehaviour
     {
         _centerPosition = GameManager.Instance.PlayerTransform.position;
         _randomAngle = UnityEngine.Random.Range(-180, 180);
+        if (_randomAngle > 70 && _randomAngle < 110)
+            _randomAngle *= 2f;
         _centerPosition.x += spawnOffsetFromCharacter * Mathf.Sin(_randomAngle);
         _centerPosition.z += spawnOffsetFromCharacter * Mathf.Cos(_randomAngle);
 

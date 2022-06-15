@@ -20,7 +20,7 @@ public class PlayerControl : MonoBehaviour
 
     private Joystick _joystick;
     private Rigidbody _mainRigidbody;
-    private CharacterCustomizer _characterCustomizer;
+    private CharacterController _characterCustomizer;
     private float _angle;
     private bool _isRunning;
     private Vector3 newVelocity;
@@ -30,7 +30,7 @@ public class PlayerControl : MonoBehaviour
     {
         _joystick = FindObjectOfType<Joystick>();
         _mainRigidbody = GetComponent<Rigidbody>();
-        _characterCustomizer = characterTransform.GetComponentInChildren<CharacterCustomizer>();
+        _characterCustomizer = characterTransform.GetComponentInChildren<CharacterController>();
     }
 
     private void Update()
