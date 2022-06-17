@@ -622,7 +622,6 @@ GameObject:
   - component: {fileID: 6769044948749490779}
   - component: {fileID: 920315402}
   - component: {fileID: 4680843005070372088}
-  - component: {fileID: 1634865258935249984}
   m_Layer: 7
   m_Name: ShooterEnemy
   m_TagString: Untagged
@@ -727,19 +726,6 @@ CapsuleCollider:
   m_Height: 7
   m_Direction: 1
   m_Center: {x: 0, y: 3.07, z: 0}
---- !u!114 &1634865258935249984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5850478649724151559}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 590b7a17d5fd33f40b9b96521500b97a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SuctionDistance: 0
 --- !u!1 &5977818327906600028
 GameObject:
   m_ObjectHideFlags: 0
