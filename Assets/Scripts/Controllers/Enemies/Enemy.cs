@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public abstract class Enemy : MonoBehaviour
+[RequireComponent(typeof(EnemyAnimator))]
+public abstract class Enemy : MonoBehaviour, IDamagable
 {
     [SerializeField]
     protected ProjectilePool[] projectilePools;
@@ -21,6 +23,9 @@ public abstract class Enemy : MonoBehaviour
     protected float zAdditionalRadius;
 
     [SerializeField]
+    protected ParticlesPool explosionParticlesPool;
+
+    [SerializeField]
     protected Mesh gizmosMesh;
 
     protected bool _isShooting = false;
@@ -29,9 +34,12 @@ public abstract class Enemy : MonoBehaviour
     protected int rand;
     protected NavMeshAgent _navMeshAgent;
     protected Animator _animator;
+    protected EnemyAnimator _enemyAnimator;
     protected Transform _playerTransform;
     protected Vector3 _projectileDirection;
     protected Vector3 _position;
+
+    protected bool _blackholed = false;
 
     private float _radius;
     private void Start()
@@ -40,6 +48,8 @@ public abstract class Enemy : MonoBehaviour
     }
     private void Update()
     {
+        if (_blackholed)
+            return;
         transform.LookAt(_playerTransform.position);
         if (countdownCooldown > 0)
             countdownCooldown -= Time.deltaTime;
@@ -60,18 +70,66 @@ public abstract class Enemy : MonoBehaviour
             TryShoot();
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == StaticValues.MinigunLayer
+            || other.gameObject.layer == StaticValues.LaserLayer
+            || other.gameObject.layer == StaticValues.FlamesLayer)
+        {
+            GetDamage(0);
+        }
+        else if(other.gameObject.layer == StaticValues.BlackHoleLayer)
+        {
+            GetBlackholed();
+        }
+        else if(other.gameObject.layer == StaticValues.VacuumLayer && _blackholed)
+        {
+
+            EventsPool.EnemyBlackholedFinished.Invoke();
+            Expire();
+        }
+    }
     protected abstract void StartChasing();
     protected abstract void StopChasing();
     protected abstract void TryShoot();
+    protected virtual void Expire()
+    {
+        StopAllCoroutines();
+        GetComponent<IDisposable>()?.Dispose();
+    }
+    protected virtual void Explode()
+    {
+        explosionParticlesPool?.Pool.Get().transform.SetPositionAndRotation(transform.position, transform.rotation);
+        Expire();
+    }
     public virtual void Initialize()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
+        _enemyAnimator = GetComponent<EnemyAnimator>();
+        _enemyAnimator.enabled = false;
         _isShooting = false;
+        _blackholed = false;
         countdownCooldown = 0;
+        _coroutineRunning = false;
         _navMeshAgent.isStopped = false;
         _playerTransform = GameManager.Instance.PlayerTransform;
         _navMeshAgent.destination = _playerTransform.position;
+    }
+    protected virtual void GetBlackholed()
+    {
+        if (_blackholed || _enemyAnimator == null)
+            return;
+
+        StopAllCoroutines();
+        EventsPool.EnemyBlackholed.Invoke();
+        _blackholed = true;
+        _enemyAnimator.SuctionDistance = Vector3.Distance(transform.position, GameManager.Instance.PlayerTransform.position);
+        _enemyAnimator.enabled = true;
+    }
+    public void GetDamage(float damage)
+    {
+        Explode();
     }
     private void OnDrawGizmosSelected()
     {

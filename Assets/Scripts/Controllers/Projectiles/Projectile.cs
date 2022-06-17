@@ -1,8 +1,12 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(ProjectileAnimator))]
 public abstract class Projectile : MonoBehaviour, ISuckable
 {
+    [SerializeField]
+    protected FillType fillType;
+
     [SerializeField]
     protected float damage;
 
@@ -18,11 +22,16 @@ public abstract class Projectile : MonoBehaviour, ISuckable
     protected Rigidbody _rb;
     protected Animator _animator;
     protected TrailRenderer _trailRenderer;
+    protected ProjectileAnimator _prjAnimator;
     protected Timer _timer;
     protected Bezier _bezierCurve;
-    protected bool _sucked = false;
     private IDisposable _disposable;
     private Vector3 _newScale;
+
+    protected bool _sucked = false;
+    protected bool _blackholed = false;
+    protected bool _shouldSuck = false;
+    protected bool _shouldBlackhole = false;
 
     #region Curving
     Vector3 nextPos;
@@ -31,6 +40,12 @@ public abstract class Projectile : MonoBehaviour, ISuckable
 
     private float _velocityMagnitude;
     private float _suctionDistance;
+
+    public bool Running
+    {
+        get { return _rb.velocity.sqrMagnitude > 0; }
+    }
+
     public virtual void Shoot(Vector3 velocity, Bezier bezierCurve = null)
     {
         transform.rotation = Quaternion.LookRotation(velocity.normalized, Vector3.up);
@@ -54,7 +69,8 @@ public abstract class Projectile : MonoBehaviour, ISuckable
             _timer = TimersPool.Pool.Get();
             _timer.Duration = durationToExpire;
             _timer.AddTimerFinishedEventListener(TimerFinished);
-        }
+            _prjAnimator = GetComponent<ProjectileAnimator>();
+}
         ResetProjectile();
         transform.position = position;
     }
@@ -63,7 +79,13 @@ public abstract class Projectile : MonoBehaviour, ISuckable
         _rb.velocity = Vector3.zero;
         transform.localScale = Vector3.one;
         _sucked = false;
+        _blackholed = false;
+        _shouldSuck = false;
+        _shouldBlackhole = false;
         _bezierCurve = null;
+        _prjAnimator.ToVacuum = false;
+        _prjAnimator.ToBlackhole = false;
+        _prjAnimator.enabled = false;
         ResetTrailer(false);
         if(_animator != null)
             _animator.speed = 0;
@@ -76,15 +98,17 @@ public abstract class Projectile : MonoBehaviour, ISuckable
         _trailRenderer.widthMultiplier = 1;
         _trailRenderer.emitting = activation;
     }
-    protected virtual void Expire()
+    public virtual void Expire()
     {
+        if (!gameObject.activeSelf)
+            return;
         _timer?.Stop();
         _disposable?.Dispose();
         ResetProjectile();
     }
     protected virtual void TimerFinished()
     {
-        if(!_sucked)
+        if(!_sucked && gameObject.activeSelf)
             Explode(true);
     }
     protected virtual void Explode(bool shouldDamage)
@@ -103,30 +127,46 @@ public abstract class Projectile : MonoBehaviour, ISuckable
     }
     public void GetSucked()
     {
-        if (_sucked || !_timer.Running)
+        if (_sucked)
             return;
+        if (!_timer.Running)
+        {
+            if (!_shouldSuck)
+                _shouldSuck = true;
+            return;
+        }
         _sucked = true;
-        _suctionDistance = Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position);
+        _shouldSuck = false;
+        _timer.Stop();
+        _rb.velocity = Vector3.zero;
+        _bezierCurve = null;
+        _prjAnimator.SuctionDistance = Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position);
+        _prjAnimator.ToVacuum = true;
+        _prjAnimator.ToBlackhole = false;
+        _prjAnimator.enabled = true;
     }
-    protected abstract void HitPlayer(Collider other);
-    protected virtual void ScaleWithVacuum()
+    public void GetBlackholed()
     {
-        _newScale = Vector3.Lerp(
-            Vector3.one,
-            Vector3.zero,
-            Mathf.Clamp(
-                1.2f - (Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position) / _suctionDistance),
-                0, 1)
-            );
-        if (_newScale.x < transform.localScale.x) transform.localScale = _newScale;
-        if (_trailRenderer != null)
-            _trailRenderer.widthMultiplier = transform.localScale.x;
+        if (_blackholed)
+            return;
+        if (!_timer.Running)
+        {
+            if (!_shouldBlackhole)
+                _shouldBlackhole = true;
+            return;
+        }
+        EventsPool.EnemyBlackholed.Invoke();
+        _blackholed = true;
+        _shouldBlackhole = false;
+        _timer.Stop();
+        _bezierCurve = null;
+        _rb.velocity = Vector3.zero;
+        _prjAnimator.SuctionDistance = Vector3.Distance(transform.position, GameManager.Instance.PlayerTransform.position);
+        _prjAnimator.ToBlackhole = true;
+        _prjAnimator.ToVacuum = false;
+        _prjAnimator.enabled = true;
     }
-    protected virtual void FollowVacuum()
-    {
-        _rb.velocity = GameManager.Instance.SuctionVelocity * (GameManager.Instance.VacuumTransform.position - transform.position).normalized;
-        transform.rotation = Quaternion.LookRotation(_rb.velocity.normalized, Vector3.up);
-    }
+    protected abstract void HitUnit(Collider other);
     protected virtual void CurveProjectile()
     {
         nextPos = _bezierCurve.GetPoint(elapsedTime);
@@ -142,54 +182,61 @@ public abstract class Projectile : MonoBehaviour, ISuckable
     }
     protected virtual void Triggered(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Projectile"))
+        if (other.gameObject.layer == gameObject.layer)
         {
             return;
         }
-        else if (other.gameObject.layer == LayerMask.NameToLayer("Vacuum"))
+        else if (other.gameObject.layer == StaticValues.VacuumLayer)
         {
-            GetSucked();
+            if (_sucked || _blackholed)
+            {
+                EventsPool.PickedupObjectEvent.Invoke(fillType);
+                Expire();
+            }
+            else
+                GetSucked();
+        }
+        else if(other.gameObject.layer == StaticValues.BlackHoleLayer)
+        {
+            GetBlackholed();
+        }
+        else if(other.gameObject.layer == StaticValues.PlayerLayer)
+        {
+            if (_sucked || _blackholed)
+            {
+                if (_blackholed)
+                    EventsPool.EnemyBlackholedFinished.Invoke();
+                EventsPool.PickedupObjectEvent.Invoke(fillType);
+                Expire();
+            }
+            else
+                HitUnit(other);
         }
         else
         {
-            if (!_sucked)
-            {
-                HitPlayer(other);
-            }
-            else
-            {
-                EventsPool.PickedupObjectEvent.Invoke(GetType());
-                Expire();
-            }
+            Explode(false);
         }
     }
     private void OnTriggerEnter(Collider other)
     {
         Triggered(other);
     }
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Vacuum"))
-            GetSucked();
-    }
-    private void Update()
-    {
-        if (_sucked)
-        {
-            ScaleWithVacuum();
-        }
+        if (other.gameObject.layer == StaticValues.VacuumLayer)
+            _shouldSuck = false;
+        else if (other.gameObject.layer == StaticValues.BlackHoleLayer)
+            _shouldBlackhole = false;
     }
     private void FixedUpdate()
     {
         if (_rb == null)
             return;
-        if (_sucked)
-        {
-            FollowVacuum();
-        }
-        else if(_bezierCurve != null)
-        {
+        if (_shouldSuck)
+            GetSucked();
+        else if (_shouldBlackhole)
+            GetBlackholed();
+        else if (_bezierCurve != null)
             CurveProjectile();
-        }
     }
 }

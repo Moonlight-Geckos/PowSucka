@@ -1336,6 +1336,7 @@ GameObject:
   - component: {fileID: 3772092490673632744}
   - component: {fileID: 7292382827466033276}
   - component: {fileID: 6801864153395567200}
+  - component: {fileID: 6288808090328338093}
   m_Layer: 7
   m_Name: BombsEnemy
   m_TagString: Untagged
@@ -1423,8 +1424,24 @@ MonoBehaviour:
   shootingCooldown: 1
   aimDuration: 1
   zAdditionalRadius: 7
+  explosionParticlesPool: {fileID: 11400000, guid: 421af44b040b45b4a9899612cf1cb36b,
+    type: 2}
   gizmosMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   startBombTransform: {fileID: 87874915}
+--- !u!136 &6288808090328338093
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7634400002953491752}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1.5
+  m_Height: 7
+  m_Direction: 1
+  m_Center: {x: 0, y: 3.07, z: 0}
 --- !u!1 &7653514725575710323
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 30558237497266113}
   - component: {fileID: 30558237497266114}
   - component: {fileID: 30558237497266115}
-  m_Layer: 0
+  - component: {fileID: 8206087030787426973}
+  m_Layer: 9
   m_Name: BombHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,11 +63,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e2c1f2ec55d084f8fb2af992f5fecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fillType: 2
   damage: 10
   durationToExpire: 1.75
   arcRadius: 0
   explosionParticlesPool: {fileID: 11400000, guid: c6c0a6fcadda6444a9ff9f25507c3257,
     type: 2}
+--- !u!114 &8206087030787426973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30558237497266116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d1d1f3e96368ff40b52bc706d7a428f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SuctionDistance: 0
+  ToVacuum: 0
+  ToBlackhole: 0
 --- !u!1001 &1343400112650810638
 PrefabInstance:
   m_ObjectHideFlags: 0

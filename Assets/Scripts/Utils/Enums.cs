@@ -1,12 +1,17 @@
-public enum ProjectileType
+public enum ShootingType
 {
-    BasicCanonProjectile,
-    TripleCanonProjectile,
-    ExplosiveProjectile
+    Laser,
+    Blackhole,
+    Minigun,
+    Rockets,
+    Flames,
+    Goo
 }
-public enum PowerupType
+public enum FillType
 {
-    BasicCanonProjectile,
-    TripleCanonProjectile,
-    ExplosiveProjectile
+    Rocket,
+    Bullet,
+    Bomb,
+    Goo,
+    Diamond
 }

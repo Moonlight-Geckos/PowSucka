@@ -8,8 +8,9 @@ public class Rocket : Projectile
     }
     protected override void Triggered(Collider other)
     {
-        Rocket otherRocket;
-        if (other.transform.parent.TryGetComponent(out otherRocket))
+        Rocket otherRocket = null;
+        other.transform.parent?.TryGetComponent(out otherRocket);
+        if (otherRocket != null && !_sucked && !_blackholed)
         {
             if (_bezierCurve == null)
             {
@@ -24,7 +25,7 @@ public class Rocket : Projectile
         else
             base.Triggered(other);
     }
-    protected override void HitPlayer(Collider other)
+    protected override void HitUnit(Collider other)
     {
         Explode(true);
     }

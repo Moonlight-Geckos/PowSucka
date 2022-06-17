@@ -2,23 +2,20 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-class EnemySpawnInst
-{
-    [SerializeField]
-    [Range(0f, 1f)]
-    public float startProbablity;
-
-    [SerializeField]
-    [Range(0f, 1f)]
-    public float endProbablity;
-
-    [SerializeField]
-    public EnemyPool enemyPool;
-}
 
 public class EnemySpawner : MonoBehaviour
 {
+
+    [Serializable]
+    class EnemySpawnInst
+    {
+        public float startProbablity;
+
+        public float endProbablity;
+
+        public EnemyPool enemyPool;
+    }
+
     #region Serialized
 
     [SerializeField]
@@ -55,6 +52,7 @@ public class EnemySpawner : MonoBehaviour
             _instance = this;
             _spawnTimer = TimersPool.Pool.Get();
             _spawnTimer.Duration = spawnInterval;
+            _currentProbablities = new float[spawnProbabilities.Length];
             _spawnTimer.AddTimerFinishedEventListener(Spawn);
         }
     }
@@ -65,11 +63,12 @@ public class EnemySpawner : MonoBehaviour
     void Spawn()
     {
         _centerPosition = GameManager.Instance.PlayerTransform.position;
-        _randomAngle = UnityEngine.Random.Range(-180, 180);
-        if (_randomAngle > 70 && _randomAngle < 110)
-            _randomAngle *= 2f;
-        _centerPosition.x += spawnOffsetFromCharacter * Mathf.Sin(_randomAngle);
-        _centerPosition.z += spawnOffsetFromCharacter * Mathf.Cos(_randomAngle);
+        _randomAngle = UnityEngine.Random.Range(-Mathf.PI, Mathf.PI);
+        _centerPosition.x += spawnOffsetFromCharacter * Mathf.Cos(_randomAngle);
+        if (Mathf.Rad2Deg * _randomAngle > 60 && Mathf.Rad2Deg * _randomAngle < 130)
+            _centerPosition.z += 2 * spawnOffsetFromCharacter * Mathf.Sin(_randomAngle);
+        else
+            _centerPosition.z += spawnOffsetFromCharacter * Mathf.Sin(_randomAngle);
 
         if (_centerPosition.x <= -WorldLimits.XLimits)
             _centerPosition.x += spawnOffsetFromCharacter * 2;
@@ -78,7 +77,7 @@ public class EnemySpawner : MonoBehaviour
         if (_centerPosition.z <= -WorldLimits.ZLimits)
             _centerPosition.z += spawnOffsetFromCharacter * 2;
         else if (_centerPosition.z >= WorldLimits.ZLimits)
-            _centerPosition.z -= spawnOffsetFromCharacter * 2;
+            _centerPosition.z -= spawnOffsetFromCharacter * 4;
 
         canSpawn.Clear();
         float cumulativeProb = 0;
@@ -106,6 +105,12 @@ public class EnemySpawner : MonoBehaviour
         enemy = spawnProbabilities[canSpawn[UnityEngine.Random.Range(0, canSpawn.Count)]].enemyPool.Pool.Get();
         enemy.transform.position = _centerPosition;
         enemy.Initialize();
+        if (Observer.weaponMode)
+        {
+            _spawnTimer.Duration = spawnInterval / 4f;
+        }
+        else
+            _spawnTimer.Duration = spawnInterval;
         _spawnTimer.Run();
     }
     private void OnValidate()

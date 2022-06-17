@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(PickupAnimator))]
 public class Pickup : MonoBehaviour
 {
+    [SerializeField]
+    protected FillType fillType;
+
     protected bool _sucked;
     protected PickupAnimator _animator;
     protected Projector _projector;
@@ -16,11 +19,12 @@ public class Pickup : MonoBehaviour
         _sucked = true;
         _animator.SuctionDistance = Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position);
         _animator.enabled = true;
-        _projector.enabled = false;
+        if (_projector != null)
+            _projector.enabled = false;
     }
     protected virtual void GetPicked(Collider other)
     {
-        EventsPool.PickedupObjectEvent.Invoke(GetType());
+        EventsPool.PickedupObjectEvent.Invoke(fillType);
         _animator.enabled = false;
     }
     protected virtual void Expire()
@@ -29,7 +33,7 @@ public class Pickup : MonoBehaviour
     }
     protected virtual void Triggered(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Vacuum"))
+        if (other.gameObject.layer == StaticValues.VacuumLayer || other.gameObject.layer == StaticValues.BlackHoleLayer)
         {
             GetSucked();
         }
@@ -51,10 +55,17 @@ public class Pickup : MonoBehaviour
         _animator = GetComponent<PickupAnimator>();
         _projector = GetComponentInChildren<Projector>();
         _animator.enabled = false;
-        _projector.enabled = true;
+        if(_projector != null)
+            _projector.enabled = true;
     }
     private void OnTriggerEnter(Collider other)
     {
         Triggered(other);
+    }
+    private void OnEnable()
+    {
+        _animator.enabled = false;
+        if (_projector != null)
+            _projector.enabled = true;
     }
 }

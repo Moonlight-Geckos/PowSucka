@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45024e37657e4274eb82b6cd26557267, type: 3}
+  m_Name: EnemyExplosionPool
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1276403881938263528, guid: 33ea9487d9f81c54fbd061a9554e8c07, type: 3}
+  maxPoolSize: 100

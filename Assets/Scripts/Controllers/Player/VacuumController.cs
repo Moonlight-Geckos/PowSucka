@@ -1,34 +1,52 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class VacuumController : MonoBehaviour
 {
+    [Serializable]
+    class ShootingItem
+    {
+        public GameObject parent;
+        public ShootingType shootType;
+        public float duration;
+    }
+    [SerializeField]
+    private GameObject suction;
+
+    [SerializeField]
+    private ShootingItem[] shootingItems;
+
     [SerializeField]
     private Transform liquidFill;
 
     [SerializeField]
-    private ParticleSystem collectedPRJPS;
+    private ParticleSystem collectedPRJParticleSystem;
 
     private byte _fillPercent = 0;
-    private Dictionary<Type, int> _projectilesFilled;
+    private Timer _weaponTimer;
+    private ShootingItem _currentWeapon;
+    private Dictionary<FillType, int> _projectilesFilled;
 
     private void Awake()
     {
         liquidFill.localScale = new Vector3(1, 0, 1);
-        EventsPool.PickedupObjectEvent.AddListener(PickupProjectile);
-        _projectilesFilled = new Dictionary<Type, int>();
+        _projectilesFilled = new Dictionary<FillType, int>();
         _fillPercent = 0;
+        _weaponTimer = TimersPool.Pool.Get();
+        _weaponTimer.AddTimerFinishedEventListener(DisposeWeapon);
+        EventsPool.PickedupObjectEvent.AddListener(PickupProjectile);
     }
-    private void PickupProjectile(Type prj)
+    private void PickupProjectile(FillType prj)
     {
-        if (!prj.IsSubclassOf(typeof(Projectile)))
+        if (prj == FillType.Diamond || Observer.weaponMode)
             return;
         if (_fillPercent < 100)
         {
             _fillPercent += StaticValues.GetFillPercent(prj);
             liquidFill.localScale = new Vector3(1, _fillPercent/100f, 1);
-            collectedPRJPS.Play();
+            collectedPRJParticleSystem.Play();
 
             if (!_projectilesFilled.ContainsKey(prj))
             {
@@ -43,11 +61,55 @@ public class VacuumController : MonoBehaviour
     }
     private void VacuumFull()
     {
-        foreach(Type type in _projectilesFilled.Keys)
+        int x = -1, y = -2;
+        FillType x1 = FillType.Goo, x2 = FillType.Bullet;
+        foreach(var item in _projectilesFilled)
         {
-            Debug.Log(type.Name + " " + _projectilesFilled[type].ToString());
+            if(y < x)
+            {
+                if (item.Value > y)
+                {
+                    y = item.Value;
+                    x2 = item.Key;
+                }
+            }
+            else if(item.Value > x)
+            {
+                x = item.Value;
+                x1 = item.Key;
+            }
         }
-
-        Debug.Log("Boom !!");
+        Debug.Log(new Tuple<FillType, FillType>(x1, x2));
+        ShootingType ds = StaticValues.Combinations[new Tuple<FillType, FillType>(x1, x2)];
+        foreach(ShootingItem pair in shootingItems)
+        {
+            if (pair.shootType == ds)
+                _currentWeapon = pair;
+            else
+                pair.parent.SetActive(false);
+        }
+        suction.SetActive(false);
+        _currentWeapon.parent.SetActive(true);
+        _weaponTimer.Duration = _currentWeapon.duration;
+        _weaponTimer.Run();
+        _projectilesFilled.Clear();
+        _fillPercent = 0;
+        EventsPool.ChangePhaseEvent.Invoke();
+    }
+    private void DisposeWeapon()
+    {
+        IEnumerator dispose()
+        {
+            yield return null;
+            var cd = _currentWeapon.parent.GetComponent<Collider>();
+            if(cd != null)
+                cd.enabled = false;
+            if (cd != null)
+                cd.enabled = true;
+            _currentWeapon.parent.SetActive(false);
+            suction.SetActive(true);
+            EventsPool.ChangePhaseEvent.Invoke();
+        }
+        StartCoroutine(dispose());
     }
 }

@@ -48,7 +48,7 @@ public class PlayerControl : MonoBehaviour
             _mainRigidbody.velocity = Vector3.zero;
             return;
         }
-        newVelocity = new Vector3(horizontalMove * characterSpeed,0,verticalMove * characterSpeed);
+        newVelocity = new Vector3(_joystick.Direction.x, 0, _joystick.Direction.y).normalized * characterSpeed;
 
         Vector3.ClampMagnitude(newVelocity, characterSpeed);
         _mainRigidbody.velocity = newVelocity;

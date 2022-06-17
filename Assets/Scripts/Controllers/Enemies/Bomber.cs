@@ -47,4 +47,16 @@ public class Bomber : Enemy
         }
         StartCoroutine(shoot());
     }
+    protected override void Expire()
+    {
+        base.Expire();
+        if ( _projectile != null && _projectile.gameObject.activeSelf && !_projectile.Running)
+            _projectile.Expire();
+    }
+    protected override void GetBlackholed()
+    {
+        base.GetBlackholed();
+        if (_projectile != null && _projectile.gameObject.activeSelf && !_projectile.Running)
+            _projectile.Expire();
+    }
 }

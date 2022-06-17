@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 7255778578210739096}
   - component: {fileID: 7255778578210739099}
   - component: {fileID: 7255778578210739098}
-  m_Layer: 0
+  - component: {fileID: 4935693200569100400}
+  m_Layer: 9
   m_Name: BulletHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,11 +63,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5b06908727eb1479e43149388e88b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fillType: 1
   damage: 5
   durationToExpire: 4
   arcRadius: 0
   explosionParticlesPool: {fileID: 11400000, guid: 595cbea57e6e12d40aa9b6a4312e06de,
     type: 2}
+--- !u!114 &4935693200569100400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7255778578210739093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d1d1f3e96368ff40b52bc706d7a428f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SuctionDistance: 0
+  ToVacuum: 0
+  ToBlackhole: 0
 --- !u!1001 &7255778578055951666
 PrefabInstance:
   m_ObjectHideFlags: 0

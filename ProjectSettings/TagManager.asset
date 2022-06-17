@@ -18,12 +18,12 @@ TagManager:
   - Projectile
   - Vacuum
   - Pickup
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Flame
+  - Blackhole
+  - Laser
+  - Minigun
+  - PlayerProjectile
+  - Goo
   - 
   - 
   - 

@@ -33,7 +33,7 @@ public class PickupAnimator : MonoBehaviour
         transform.position = Vector3.Lerp(
             transform.position,
             GameManager.Instance.VacuumTransform.position,
-            Time.deltaTime * (GameManager.Instance.SuctionVelocity / SuctionDistance)
+            Time.deltaTime * (GameManager.Instance.SuctionVelocity / SuctionDistance * 1.5f)
             );
         if (_trailRenderer != null)
             _trailRenderer.widthMultiplier = transform.localScale.x;

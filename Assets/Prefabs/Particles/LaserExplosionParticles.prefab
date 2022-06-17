@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1276403881470813189}
   - component: {fileID: 1276403881470813188}
   - component: {fileID: 1276403881470813191}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4884,7 +4884,7 @@ GameObject:
   - component: {fileID: 1276403881938263529}
   - component: {fileID: -8225131208670644494}
   - component: {fileID: 1328035167809629491}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: LaserExplosionParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9728,13 +9728,13 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
+  m_UseCustomVertexStreams: 1
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
-  m_VertexStreams: 00010304
+  m_VertexStreams: 00030409
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}

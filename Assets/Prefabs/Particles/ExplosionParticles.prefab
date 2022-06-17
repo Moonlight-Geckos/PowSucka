@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1276403881388439190}
   - component: {fileID: 1276403881388439185}
   - component: {fileID: 1276403881388439184}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4881,7 +4881,7 @@ GameObject:
   - component: {fileID: 1276403881470813189}
   - component: {fileID: 1276403881470813188}
   - component: {fileID: 1276403881470813191}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9754,7 +9754,7 @@ GameObject:
   - component: {fileID: 1276403881938263529}
   - component: {fileID: -8225131208670644494}
   - component: {fileID: 1328035167809629491}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: ExplosionParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9786,7 +9786,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276403881938263528}
   serializedVersion: 8
-  lengthInSec: 1
+  lengthInSec: 0.4
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -14640,4 +14640,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0392a64c6cfa4642bca9816b5ece0b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionDamage: 4
