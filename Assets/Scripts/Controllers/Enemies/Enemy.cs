@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(EnemyAnimator))]
 public abstract class Enemy : MonoBehaviour, IDamagable
 {
     [SerializeField]
@@ -34,10 +33,14 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     protected int rand;
     protected NavMeshAgent _navMeshAgent;
     protected Animator _animator;
-    protected EnemyAnimator _enemyAnimator;
     protected Transform _playerTransform;
     protected Vector3 _projectileDirection;
     protected Vector3 _position;
+
+    private float _suctionDistance;
+    private float _curDis;
+    private Vector3 _newScale;
+    private Vector3 _direction;
 
     protected bool _blackholed = false;
 
@@ -49,7 +52,11 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     private void Update()
     {
         if (_blackholed)
+        {
+            ScaleWithBlackhole();
+            MoveToBlackhole();
             return;
+        }
         transform.LookAt(_playerTransform.position);
         if (countdownCooldown > 0)
             countdownCooldown -= Time.deltaTime;
@@ -106,8 +113,6 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
-        _enemyAnimator = GetComponent<EnemyAnimator>();
-        _enemyAnimator.enabled = false;
         _isShooting = false;
         _blackholed = false;
         countdownCooldown = 0;
@@ -118,18 +123,39 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     }
     protected virtual void GetBlackholed()
     {
-        if (_blackholed || _enemyAnimator == null)
+        if (_blackholed)
             return;
 
         StopAllCoroutines();
         EventsPool.EnemyBlackholed.Invoke();
         _blackholed = true;
-        _enemyAnimator.SuctionDistance = Vector3.Distance(transform.position, GameManager.Instance.PlayerTransform.position);
-        _enemyAnimator.enabled = true;
+        _suctionDistance = Vector3.Distance(transform.position, GameManager.Instance.PlayerTransform.position);
     }
     public void GetDamage(float damage)
     {
         Explode();
+    }
+    protected void ScaleWithBlackhole()
+    {
+        _newScale = Vector3.Lerp(
+            Vector3.one,
+            Vector3.zero,
+            Mathf.Clamp(
+                1.2f - (Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position) / _suctionDistance),
+                0, 1)
+            );
+        if (_newScale.x < transform.localScale.x) transform.localScale = _newScale;
+        if (_newScale.x < 0.1f)
+            Expire();
+    }
+    protected void MoveToBlackhole()
+    {
+        _direction = (GameManager.Instance.PlayerTransform.position - transform.position);
+        _direction.y = 0;
+        _direction = Quaternion.Euler(0, -80, 0) * _direction;
+        _curDis = GameManager.Instance.SuctionVelocity * Time.deltaTime;
+        transform.Translate(_direction.normalized * _curDis, Space.World);
+        transform.rotation = Quaternion.LookRotation(_direction.normalized, Vector3.up);
     }
     private void OnDrawGizmosSelected()
     {

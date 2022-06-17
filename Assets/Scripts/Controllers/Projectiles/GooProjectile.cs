@@ -60,7 +60,7 @@ public class GooProjectile : Projectile
         IEnumerator getbig()
         {
             yield return null;
-            while (transform.localScale.x < 9.7f)
+            while (transform.localScale.x < onFlatScale-0.1f)
             {
                 transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * onFlatScale, Time.deltaTime * 4);
                 yield return new WaitForEndOfFrame();
@@ -71,6 +71,7 @@ public class GooProjectile : Projectile
     }
     private void Disolve()
     {
+        Debug.Log("Dissolve??");
         IEnumerator disolve()
         {
             yield return null;
