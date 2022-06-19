@@ -10,24 +10,19 @@ public class GooProjectile : Projectile
     private float onGroundDuration = 5;
 
     private bool _active = false;
-    private bool _shot = false;
     private Timer _activeTimer;
+
+    private void OnTriggerExit(Collider other)
+    {
+        other.GetComponent<IDamagable>()?.StopDamage();
+    }
     protected override void HitUnit(Collider other)
     {
-        other.GetComponent<IDamagable>()?.GetDamage(damage);
+        other.GetComponent<IDamagable>()?.GetDamage(damage, 0.5f);
     }
     protected override void Triggered(Collider other)
     {
-        if (_shot)
-            return;
-        if (_active)
-        {
-            HitUnit(other);
-        }
-        else
-        {
-            SitOnGround();
-        }
+        HitUnit(other);
     }
     protected override void ResetProjectile()
     {
@@ -54,7 +49,6 @@ public class GooProjectile : Projectile
         if (_active)
             return;
         _rb.velocity = Vector3.zero;
-        _shot = false;
         _active = true;
 
         IEnumerator getbig()
@@ -71,7 +65,6 @@ public class GooProjectile : Projectile
     }
     private void Disolve()
     {
-        Debug.Log("Dissolve??");
         IEnumerator disolve()
         {
             yield return null;

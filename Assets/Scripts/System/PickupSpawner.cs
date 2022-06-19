@@ -9,6 +9,9 @@ public class PickupSpawner : MonoBehaviour
     #region Serialized
 
     [SerializeField]
+    private int maxPickupsOnGround = 50;
+
+    [SerializeField]
     private PickupPool[] pickupPools;
 
     [SerializeField]
@@ -59,7 +62,7 @@ public class PickupSpawner : MonoBehaviour
     }
     void Spawn()
     {
-        if (_pickupsOnGround >= 50)
+        if (_pickupsOnGround >= maxPickupsOnGround)
             return;
         _centerPosition = GameManager.Instance.PlayerTransform.position;
         _randomAngle = UnityEngine.Random.Range(-Mathf.PI, Mathf.PI);

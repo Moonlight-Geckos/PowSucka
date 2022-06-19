@@ -80,7 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fillType: 3
   damage: 10
-  durationToExpire: 0.15
+  durationToExpire: 0.3
   arcRadius: 4
   explosionParticlesPool: {fileID: 0}
   onFlatScale: 8

@@ -5,9 +5,11 @@ using System.Collections.Generic;
 public static class StaticValues
 {
     private static byte _bulletFillPercent = 2;
-    private static byte _bombFillPercent = 3;
-    private static byte _rocketFillPercent = 5;
+    private static byte _bombFillPercent = 5;
+    private static byte _rocketFillPercent = 4;
+    private static byte _gooFillPercent = 6;
 
+    public readonly static int EnemyLayer = LayerMask.NameToLayer("Enemy");
     public readonly static int VacuumLayer = LayerMask.NameToLayer("Vacuum");
     public readonly static int BlackHoleLayer = LayerMask.NameToLayer("Blackhole");
     public readonly static int PlayerLayer = LayerMask.NameToLayer("Player");
@@ -21,18 +23,10 @@ public static class StaticValues
     public readonly static Dictionary<Tuple<FillType, FillType>, ShootingType> Combinations = new Dictionary<Tuple<FillType, FillType>, ShootingType>();
     public static byte GetFillPercent(FillType prj)
     {
-        if(prj == FillType.Rocket)
-        {
-            return _rocketFillPercent;
-        }
-        else if(prj == FillType.Bomb)
-        {
-            return _bombFillPercent;
-        }
-        else
-        {
-            return _bulletFillPercent;
-        }
+        if (prj == FillType.Rocket) return _rocketFillPercent;
+        else if (prj == FillType.Bomb)  return _bombFillPercent;
+        else if (prj == FillType.Goo)   return _gooFillPercent;
+        else   return _bulletFillPercent;
     }
     [RuntimeInitializeOnLoadMethod]
     public static void Initialize()

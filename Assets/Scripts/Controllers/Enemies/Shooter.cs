@@ -23,25 +23,24 @@ public class Shooter : Enemy
     }
     protected override void TryShoot()
     {
-        if (countdownCooldown > 0 || _coroutineRunning)
+        if (_countdownCooldown > 0 || _coroutineRunning)
             return;
         IEnumerator shoot()
         {
             _coroutineRunning = true;
             yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);
             _animator.SetTrigger("Aim");
-            _projectile = projectilePools[rand].Pool.Get();
+            _projectile = projectilePools[_rand].Pool.Get();
             _projectile.Initialize(startBulletTransform.position);
             yield return new WaitForSeconds(aimDuration + 0.2f);
             _animator.SetTrigger("Shoot");
 
-            rand = Random.Range(0, projectilePools.Length);
+            _rand = Random.Range(0, projectilePools.Length);
 
             _projectileDirection = _playerTransform.position - startBulletTransform.position;
             _projectileDirection.y = 0;
             _projectile.Shoot(_projectileDirection.normalized * projectileSpeed);
-
-            countdownCooldown = shootingCooldown;
+            _countdownCooldown = shootingCooldown;
             yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);
             _coroutineRunning = false;
         }

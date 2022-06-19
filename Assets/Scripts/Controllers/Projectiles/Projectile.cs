@@ -190,7 +190,8 @@ public abstract class Projectile : MonoBehaviour, ISuckable
         {
             if (_sucked || _blackholed)
             {
-                EventsPool.PickedupObjectEvent.Invoke(fillType);
+                if(_sucked)
+                    EventsPool.PickedupObjectEvent.Invoke(fillType);
                 Expire();
             }
             else
@@ -200,13 +201,15 @@ public abstract class Projectile : MonoBehaviour, ISuckable
         {
             GetBlackholed();
         }
-        else if(other.gameObject.layer == StaticValues.PlayerLayer)
+        else if(other.gameObject.layer == StaticValues.PlayerLayer
+            || other.gameObject.layer == StaticValues.EnemyLayer)
         {
-            if (_sucked || _blackholed)
+            if (_sucked || _blackholed || _shouldBlackhole || _shouldSuck)
             {
-                if (_blackholed)
+                if (_blackholed || _shouldBlackhole)
                     EventsPool.EnemyBlackholedFinished.Invoke();
-                EventsPool.PickedupObjectEvent.Invoke(fillType);
+                if(_sucked || _shouldSuck)
+                    EventsPool.PickedupObjectEvent.Invoke(fillType);
                 Expire();
             }
             else

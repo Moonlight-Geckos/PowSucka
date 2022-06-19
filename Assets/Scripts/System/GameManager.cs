@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     #region Serialized
 
     [SerializeField]
-    private float timeToSpawnBoss = 30;
+    private int enemiesToKill = 30;
 
     [SerializeField]
     private float suctionVelocity = 30;
@@ -15,11 +15,14 @@ public class GameManager : MonoBehaviour
 
     #region Private
 
-    private static Transform playerTransform;
-    private static Transform vacuumTransform;
+    private static Transform _playerTransform;
+    private static Transform _vacuumTransform;
     private static GameManager _instance;
-    private static int collectedGems;
-    private static bool started;
+    private static MonoBehaviour[] _systemScripts;
+    private static int _collectedGems;
+    private static int _leftEnemiesToKill;
+    private static bool _started;
+    private static bool _finished;
     private static float _timeSinceStarted = 0;
 
     #endregion
@@ -29,30 +32,39 @@ public class GameManager : MonoBehaviour
     }
     public Transform PlayerTransform
     {
-        get { return playerTransform; }
+        get { return _playerTransform; }
     }
     public Transform VacuumTransform
     {
-        get { return vacuumTransform; }
+        get { return _vacuumTransform; }
     }
     public bool Started
     {
-        get { return started; }
-        set { started = value; }
+        get { return _started; }
+        set { _started = value; }
+    }
+    public bool Finished
+    {
+        get { return _finished; }
+        set { _finished = value; }
     }
     public float TimeSinceStarted
     {
         get { return _timeSinceStarted; }
     }
-    public float TimeToSpawnBoss
+    public int EnemiesToKill
     {
-        get { return timeToSpawnBoss; }
+        get { return enemiesToKill; }
+    }
+    public int LeftEnemiesToKill
+    {
+        get { return _leftEnemiesToKill; }
     }
     public int CollectedGems
     {
         get
         {
-            return collectedGems;
+            return _collectedGems;
         }
     }
     public float SuctionVelocity
@@ -71,19 +83,59 @@ public class GameManager : MonoBehaviour
         else
         {
             _instance = this;
-            started = false;
+            _started = false;
             _timeSinceStarted = 0;
-            playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-            vacuumTransform = GameObject.FindGameObjectWithTag("Vacuum").transform;
+            _systemScripts = GetComponents<MonoBehaviour>();
+            foreach(var script in _systemScripts)
+            {
+                if(script != this)
+                    script.enabled = false;
+            }
+            _leftEnemiesToKill = enemiesToKill;
+            _collectedGems = PlayerStorage.CoinsCollected;
+            EventsPool.PickedupObjectEvent.AddListener(CollectGem);
+            EventsPool.GameStartedEvent.AddListener(StartGame);
+            EventsPool.EnemyDiedEvent.AddListener(EnemyDied);
         }
+    }
+    private void Start()
+    {
+        EventsPool.UpdateUIEvent.Invoke();
     }
     void Update()
     {
+        if (!_started)
+            return;
         TimersPool.UpdateTimers(Time.deltaTime);
         _timeSinceStarted += Time.deltaTime;
     }
+    private void StartGame()
+    {
+        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        _vacuumTransform = GameObject.FindGameObjectWithTag("Vacuum").transform;
+        foreach (var script in _systemScripts)
+        {
+            script.enabled = true;
+        }
+        _started = true;
+    }
+    private void CollectGem(FillType t)
+    {
+        if (t != FillType.Diamond)
+            return;
+        _collectedGems++;
+        PlayerStorage.CoinsCollected = _collectedGems;
+        EventsPool.UpdateUIEvent.Invoke();
+    }
+    private void EnemyDied()
+    {
+        _leftEnemiesToKill--;
+        EventsPool.UpdateUIEvent.Invoke();
+        if (_leftEnemiesToKill <= 0)
+            EventsPool.GameFinishedEvent.Invoke(true);
+    }
     public void AddGem()
     {
-        collectedGems++;
+        _collectedGems++;
     }
 }

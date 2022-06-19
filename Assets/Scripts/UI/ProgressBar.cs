@@ -4,11 +4,10 @@ using UnityEngine.UI;
 public class ProgressBar : MonoBehaviour
 {
     [SerializeField]
-    private Gradient colorGradient;
+    protected Gradient colorGradient;
 
-
-    private Slider slider;
-    private Image image;
+    protected Slider slider;
+    protected Image image;
 
     private void Awake()
     {
@@ -16,9 +15,12 @@ public class ProgressBar : MonoBehaviour
         image = slider.fillRect.GetComponent<Image>();
     }
 
-    public void UpdateValue(float val)
+    public void UpdateValue(float val, Color? color = null)
     {
-        image.color = colorGradient.Evaluate(val);
+        if(color == null)
+            image.color = colorGradient.Evaluate(val);
+        else
+            image.color = (Color)color;
         slider.value = val;
     }
 

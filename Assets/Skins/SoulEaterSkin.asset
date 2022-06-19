@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eeb3673230389843bf898b9e01b0d97, type: 3}
+  m_Name: SoulEaterSkin
+  m_EditorClassIdentifier: 
+  skinSprite: {fileID: 21300000, guid: b9a7f8505abde10479a56537a4eef604, type: 3}
+  skinObject: {fileID: 5548874167421492320, guid: 7fe9c781eb81bdb40930c4747be87cec,
+    type: 3}
+  price: 100
+  skinNumber: 2

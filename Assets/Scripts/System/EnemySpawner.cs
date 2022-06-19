@@ -19,10 +19,16 @@ public class EnemySpawner : MonoBehaviour
     #region Serialized
 
     [SerializeField]
+    private int maxEnemiesOnGround = 25;
+
+    [SerializeField]
     private EnemySpawnInst[] spawnProbabilities;
 
     [SerializeField]
-    private float spawnInterval = 2;
+    private float startSpawnInterval = 2;
+
+    [SerializeField]
+    private float endSpawnInterval = 0.75f;
 
     [SerializeField]
     private float spawnOffsetFromCharacter = 40;
@@ -31,10 +37,12 @@ public class EnemySpawner : MonoBehaviour
 
     private static EnemySpawner _instance;
     private static Timer _spawnTimer;
-    private Enemy enemy;
+    private int _enemiesOnGround;
+    private Enemy _enemy;
     private Vector3 _centerPosition;
     private float _randomAngle;
     private float[] _currentProbablities;
+    private float _currentInterval;
     private List<int> canSpawn = new List<int>();
 
     public static EnemySpawner Instance
@@ -51,9 +59,15 @@ public class EnemySpawner : MonoBehaviour
         {
             _instance = this;
             _spawnTimer = TimersPool.Pool.Get();
-            _spawnTimer.Duration = spawnInterval;
+            _spawnTimer.Duration = startSpawnInterval;
             _currentProbablities = new float[spawnProbabilities.Length];
             _spawnTimer.AddTimerFinishedEventListener(Spawn);
+            EventsPool.PickedupObjectEvent.AddListener((FillType f) =>
+            {
+                if (!_spawnTimer.Running)
+                    _spawnTimer.Run();
+                _enemiesOnGround--;
+            });
         }
     }
     private void Start()
@@ -62,6 +76,10 @@ public class EnemySpawner : MonoBehaviour
     }
     void Spawn()
     {
+        if (_enemiesOnGround >= maxEnemiesOnGround)
+            return;
+
+        _currentInterval = Mathf.Lerp(startSpawnInterval, endSpawnInterval, 1 - GameManager.Instance.LeftEnemiesToKill / GameManager.Instance.EnemiesToKill);
         _centerPosition = GameManager.Instance.PlayerTransform.position;
         _randomAngle = UnityEngine.Random.Range(-Mathf.PI, Mathf.PI);
         _centerPosition.x += spawnOffsetFromCharacter * Mathf.Cos(_randomAngle);
@@ -81,13 +99,11 @@ public class EnemySpawner : MonoBehaviour
 
         canSpawn.Clear();
         float cumulativeProb = 0;
-
         for (int i = 0;i < spawnProbabilities.Length; i++)
         {
-            _currentProbablities[i] = Mathf.Lerp(spawnProbabilities[i].startProbablity, spawnProbabilities[i].endProbablity, GameManager.Instance.TimeSinceStarted / GameManager.Instance.TimeToSpawnBoss);
+            _currentProbablities[i] = Mathf.Lerp(spawnProbabilities[i].startProbablity, spawnProbabilities[i].endProbablity, _currentInterval);
             cumulativeProb += _currentProbablities[i];
         }
-
         float probablity = UnityEngine.Random.Range(0.0f, cumulativeProb);
         cumulativeProb = 0;
 
@@ -102,15 +118,17 @@ public class EnemySpawner : MonoBehaviour
         }
         if(canSpawn.Count == 0)
             canSpawn.Add(UnityEngine.Random.Range(0, spawnProbabilities.Length));
-        enemy = spawnProbabilities[canSpawn[UnityEngine.Random.Range(0, canSpawn.Count)]].enemyPool.Pool.Get();
-        enemy.transform.position = _centerPosition;
-        enemy.Initialize();
+        _enemy = spawnProbabilities[canSpawn[UnityEngine.Random.Range(0, canSpawn.Count)]].enemyPool.Pool.Get();
+        _enemy.transform.position = _centerPosition;
+        _enemy.Initialize();
         if (Observer.weaponMode)
         {
-            _spawnTimer.Duration = spawnInterval / 4f;
+            _spawnTimer.Duration = _currentInterval / 2f;
         }
         else
-            _spawnTimer.Duration = spawnInterval;
+            _spawnTimer.Duration = _currentInterval;
+
+        _enemiesOnGround++;
         _spawnTimer.Run();
     }
     private void OnValidate()

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1276403881470813189}
   - component: {fileID: 1276403881470813188}
   - component: {fileID: 1276403881470813191}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4882,8 +4882,8 @@ GameObject:
   - component: {fileID: 1276403881938263535}
   - component: {fileID: 1276403881938263534}
   - component: {fileID: 1276403881938263529}
-  - component: {fileID: -3496297270603897095}
-  m_Layer: 0
+  - component: {fileID: -7691617459837353422}
+  m_Layer: 9
   m_Name: EnemyExplosionParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5042,7 +5042,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 30
+      scalar: 0
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -5099,8 +5099,8 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 0.6080576, b: 0, a: 1}
-        key1: {r: 0.6603774, g: 0.06215317, b: 0, a: 1}
+        key0: {r: 1, g: 0.9899356, b: 0, a: 1}
+        key1: {r: 1, g: 0.08163265, b: 0, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -5158,8 +5158,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 4.5
-      minScalar: 3
+      scalar: 6
+      minScalar: 4
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -9743,7 +9743,7 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &-3496297270603897095
+--- !u!114 &-7691617459837353422
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

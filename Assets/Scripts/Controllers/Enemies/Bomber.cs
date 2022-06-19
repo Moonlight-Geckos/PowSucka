@@ -23,25 +23,25 @@ public class Bomber : Enemy
     }
     protected override void TryShoot()
     {
-        if (countdownCooldown > 0 || _coroutineRunning)
+        if (_countdownCooldown > 0 || _coroutineRunning)
             return;
         IEnumerator shoot()
         {
             _coroutineRunning = true;
             yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);
             _animator.SetTrigger("Aim"); 
-            _projectile = projectilePools[rand].Pool.Get();
+            _projectile = projectilePools[_rand].Pool.Get();
             _projectile.Initialize(startBombTransform.position);
             yield return new WaitForSeconds(aimDuration + 0.2f);
             _animator.SetTrigger("Shoot");
 
-            rand = Random.Range(0, projectilePools.Length);
+            _rand = Random.Range(0, projectilePools.Length);
 
             _projectileDirection = _playerTransform.position - transform.position;
             _projectileDirection.y = 0;
             _projectile.Shoot(_projectileDirection.normalized * projectileSpeed);
 
-            countdownCooldown = shootingCooldown;
+            _countdownCooldown = shootingCooldown;
             yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);
             _coroutineRunning = false;
         }
@@ -49,9 +49,9 @@ public class Bomber : Enemy
     }
     protected override void Expire()
     {
-        base.Expire();
         if ( _projectile != null && _projectile.gameObject.activeSelf && !_projectile.Running)
             _projectile.Expire();
+        base.Expire();
     }
     protected override void GetBlackholed()
     {

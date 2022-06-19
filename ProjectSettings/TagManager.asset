@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Vacuum
+  - Fill
+  - Body
+  - Character
   layers:
   - Default
   - TransparentFX

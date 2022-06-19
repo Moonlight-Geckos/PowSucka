@@ -18,6 +18,7 @@ public class ProjectileAnimator : MonoBehaviour
     private void Awake()
     {
         _trailRenderer = GetComponentInChildren<TrailRenderer>();
+        _curDis = GameManager.Instance.SuctionVelocity * Time.deltaTime;
         ToBlackhole = false;
         ToVacuum = false;
     }
@@ -45,19 +46,11 @@ public class ProjectileAnimator : MonoBehaviour
             );
         if (_newScale.x < transform.localScale.x) transform.localScale = _newScale;
         if (_trailRenderer != null)
-            _trailRenderer.widthMultiplier = transform.localScale.x;
+            _trailRenderer.widthMultiplier = _newScale.x;
     }
     private void MoveToVacuum()
     {
-        _direction = (GameManager.Instance.VacuumTransform.position - transform.position).normalized;
-        transform.position = Vector3.Lerp(
-            transform.position,
-            GameManager.Instance.VacuumTransform.position,
-            Time.deltaTime * (GameManager.Instance.SuctionVelocity / SuctionDistance)
-            );
-        if (_trailRenderer != null)
-            _trailRenderer.widthMultiplier = transform.localScale.x;
-
+        transform.Translate((GameManager.Instance.VacuumTransform.position - transform.position).normalized * _curDis, Space.World);
         transform.rotation = Quaternion.LookRotation(_direction.normalized, Vector3.up);
     }
     private void ScaleWithBlackHole()
@@ -69,14 +62,11 @@ public class ProjectileAnimator : MonoBehaviour
             );
         if (_newScale.x < transform.localScale.x) transform.localScale = _newScale;
         if (_trailRenderer != null)
-            _trailRenderer.widthMultiplier = transform.localScale.x;
+            _trailRenderer.widthMultiplier = _newScale.x;
     }
     private void MoveToBlackHole()
     {
-        _direction = (GameManager.Instance.PlayerTransform.position - transform.position);
-        _direction.y = 0;
-        _direction = Quaternion.Euler(0, -80, 0) * _direction;
-        _curDis = GameManager.Instance.SuctionVelocity * Time.deltaTime;
+        _direction = Quaternion.Euler(0, -65, 0) * (GameManager.Instance.PlayerTransform.position - transform.position);
         transform.Translate(_direction.normalized * _curDis, Space.World);
         transform.rotation = Quaternion.LookRotation(_direction.normalized, Vector3.up);
     }

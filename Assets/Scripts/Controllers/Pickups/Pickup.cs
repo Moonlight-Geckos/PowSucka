@@ -33,21 +33,17 @@ public class Pickup : MonoBehaviour
     }
     protected virtual void Triggered(Collider other)
     {
-        if (other.gameObject.layer == StaticValues.VacuumLayer || other.gameObject.layer == StaticValues.BlackHoleLayer)
+        if (other.gameObject.layer == StaticValues.VacuumLayer 
+            || other.gameObject.layer == StaticValues.BlackHoleLayer
+            || other.gameObject.layer == StaticValues.PlayerLayer)
         {
-            GetSucked();
-        }
-        else
-        {
-            if (!_sucked)
-            {
-                GetPicked(other);
-            }
-            else
+            if (_sucked)
             {
                 GetPicked(other);
                 Expire();
             }
+            else
+                GetSucked();
         }
     }
     private void Awake()

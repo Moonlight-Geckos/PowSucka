@@ -5,6 +5,7 @@ public class PickupAnimator : MonoBehaviour
     public float SuctionDistance;
 
     private TrailRenderer _trailRenderer;
+    private Vector3 _direction;
     private Vector3 _newScale;
     private void Awake()
     {
@@ -30,11 +31,8 @@ public class PickupAnimator : MonoBehaviour
     }
     private void MoveToVacuum()
     {
-        transform.position = Vector3.Lerp(
-            transform.position,
-            GameManager.Instance.VacuumTransform.position,
-            Time.deltaTime * (GameManager.Instance.SuctionVelocity / SuctionDistance * 1.5f)
-            );
+        _direction = (GameManager.Instance.VacuumTransform.position - transform.position);
+        transform.Translate(_direction.normalized * GameManager.Instance.SuctionVelocity * Time.deltaTime, Space.World);
         if (_trailRenderer != null)
             _trailRenderer.widthMultiplier = transform.localScale.x;
     }

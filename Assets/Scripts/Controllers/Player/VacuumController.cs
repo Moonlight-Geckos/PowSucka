@@ -18,11 +18,10 @@ public class VacuumController : MonoBehaviour
     [SerializeField]
     private ShootingItem[] shootingItems;
 
-    [SerializeField]
-    private Transform liquidFill;
 
     [SerializeField]
     private ParticleSystem collectedPRJParticleSystem;
+
 
     private byte _fillPercent = 0;
     private Timer _weaponTimer;
@@ -31,7 +30,6 @@ public class VacuumController : MonoBehaviour
 
     private void Awake()
     {
-        liquidFill.localScale = new Vector3(1, 0, 1);
         _projectilesFilled = new Dictionary<FillType, int>();
         _fillPercent = 0;
         _weaponTimer = TimersPool.Pool.Get();
@@ -45,7 +43,6 @@ public class VacuumController : MonoBehaviour
         if (_fillPercent < 100)
         {
             _fillPercent += StaticValues.GetFillPercent(prj);
-            liquidFill.localScale = new Vector3(1, _fillPercent/100f, 1);
             collectedPRJParticleSystem.Play();
 
             if (!_projectilesFilled.ContainsKey(prj))
@@ -94,7 +91,8 @@ public class VacuumController : MonoBehaviour
         _weaponTimer.Run();
         _projectilesFilled.Clear();
         _fillPercent = 0;
-        EventsPool.ChangePhaseEvent.Invoke();
+        Observer.weaponDuration = _currentWeapon.duration;
+        EventsPool.ChangePhaseEvent.Invoke(true);
     }
     private void DisposeWeapon()
     {
@@ -106,9 +104,9 @@ public class VacuumController : MonoBehaviour
                 cd.enabled = false;
             if (cd != null)
                 cd.enabled = true;
-            _currentWeapon.parent.SetActive(false);
             suction.SetActive(true);
-            EventsPool.ChangePhaseEvent.Invoke();
+            _currentWeapon.parent.SetActive(false);
+            EventsPool.ChangePhaseEvent.Invoke(false);
         }
         StartCoroutine(dispose());
     }

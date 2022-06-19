@@ -31,7 +31,7 @@ public class DoubleRocket : Enemy
     }
     protected override void TryShoot()
     {
-        if (countdownCooldown > 0 || _coroutineRunning)
+        if (_countdownCooldown > 0 || _coroutineRunning)
             return;
         IEnumerator shoot()
         {
@@ -41,12 +41,12 @@ public class DoubleRocket : Enemy
             yield return new WaitForSeconds(aimDuration + 0.2f);
             _animator.SetTrigger("Shoot");
 
-            rand = Random.Range(0, projectilePools.Length);
+            _rand = Random.Range(0, projectilePools.Length);
 
-            _projectileLeft = projectilePools[rand].Pool.Get();
+            _projectileLeft = projectilePools[_rand].Pool.Get();
             _projectileLeft.Initialize(startTargetLeft.position);
 
-            _projectileRight = projectilePools[rand].Pool.Get();
+            _projectileRight = projectilePools[_rand].Pool.Get();
             _projectileRight.Initialize(startTargetRight.position);
 
             _projectileDirection = _playerTransform.position - transform.position;
@@ -61,7 +61,7 @@ public class DoubleRocket : Enemy
                 _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.Instance.PlayerTransform.position, transform.position)/2)) - (transform.right * arcDistance),
                 GameManager.Instance.PlayerTransform.position));
 
-            countdownCooldown = shootingCooldown;
+            _countdownCooldown = shootingCooldown;
             yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);
             _coroutineRunning = false;
         }

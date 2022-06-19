@@ -13,6 +13,7 @@ public class ParticleSystemController : MonoBehaviour
     void OnParticleSystemStopped()
     {
         _damage = 0;
-        GetComponent<IDisposable>()?.Dispose();
+        if(gameObject.activeSelf)
+            GetComponent<IDisposable>()?.Dispose();
     }
 }

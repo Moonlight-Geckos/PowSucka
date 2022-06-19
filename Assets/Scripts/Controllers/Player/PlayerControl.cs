@@ -13,37 +13,34 @@ public class PlayerControl : MonoBehaviour
     [SerializeField]
     private float rotationSpeed = 4;
 
-    [SerializeField]
-    private Transform characterTransform;
-
     #endregion
 
     private Joystick _joystick;
     private Rigidbody _mainRigidbody;
-    private CharacterController _characterCustomizer;
+    private Transform _character;
     private float _angle;
     private bool _isRunning;
     private Vector3 newVelocity;
-    private float horizontalMove;
-    private float verticalMove;
     private void Awake()
     {
         _joystick = FindObjectOfType<Joystick>();
         _mainRigidbody = GetComponent<Rigidbody>();
-        _characterCustomizer = characterTransform.GetComponentInChildren<CharacterController>();
+        _character = GameObject.FindGameObjectWithTag("Character").transform;
     }
 
     private void Update()
     {
-        horizontalMove = _joystick.Horizontal;
-        verticalMove = _joystick.Vertical;
-
+        if (_joystick == null)
+        {
+            _joystick = FindObjectOfType<Joystick>();
+            return;
+        }
         if (_joystick.Horizontal == 0 && _joystick.Vertical == 0)
         {
             if (_isRunning)
             {
                 _isRunning = false;
-                _characterCustomizer.Run(_isRunning);
+                EventsPool.PlayerChangedMovementEvent.Invoke(_isRunning);
             }
             _mainRigidbody.velocity = Vector3.zero;
             return;
@@ -62,12 +59,12 @@ public class PlayerControl : MonoBehaviour
         if (!_isRunning)
         {
             _isRunning = true;
-            _characterCustomizer.Run(_isRunning);
+            EventsPool.PlayerChangedMovementEvent.Invoke(_isRunning);
         }
         _angle = Vector3.Angle(_joystick.Direction, new Vector2(0, 1)) * ((_joystick.Direction.x < new Vector2(0, 1).x) ? -1.0f : 1.0f);
 
-        characterTransform.rotation = Quaternion.Slerp(
-            characterTransform.rotation,
+        _character.rotation = Quaternion.Slerp(
+            _character.rotation,
             Quaternion.AngleAxis(_angle, Vector3.up),
             Time.deltaTime * rotationSpeed);
     }
