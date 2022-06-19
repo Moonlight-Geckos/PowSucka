@@ -110,4 +110,8 @@ public class VacuumController : MonoBehaviour
         }
         StartCoroutine(dispose());
     }
+    private void FinishGame(bool w)
+    {
+
+    }
 }

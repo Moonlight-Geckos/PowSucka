@@ -66,6 +66,6 @@ public class HealthBar : MonoBehaviour
     {
         StopAllCoroutines();
         timer?.Stop();
-        canvasGroup.alpha = 0;
+        canvasGroup.alpha = 0f;
     }
 }

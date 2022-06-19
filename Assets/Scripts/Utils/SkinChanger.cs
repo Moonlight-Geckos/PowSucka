@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SkinChanger : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
         int selectedSkin = PlayerStorage.SkinSelected;
         foreach(SkinItem s in DataHolder.Instance.AllSkins)

@@ -32,6 +32,7 @@ public abstract class Projectile : MonoBehaviour, ISuckable
     protected bool _blackholed = false;
     protected bool _shouldSuck = false;
     protected bool _shouldBlackhole = false;
+    protected Observer _observer;
 
     #region Curving
     Vector3 nextPos;
@@ -140,7 +141,7 @@ public abstract class Projectile : MonoBehaviour, ISuckable
         _timer.Stop();
         _rb.velocity = Vector3.zero;
         _bezierCurve = null;
-        _prjAnimator.SuctionDistance = Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position);
+        _prjAnimator.SuctionDistance = Vector3.Distance(transform.position, _observer.VacuumTransform.position);
         _prjAnimator.ToVacuum = true;
         _prjAnimator.ToBlackhole = false;
         _prjAnimator.enabled = true;
@@ -161,7 +162,7 @@ public abstract class Projectile : MonoBehaviour, ISuckable
         _timer.Stop();
         _bezierCurve = null;
         _rb.velocity = Vector3.zero;
-        _prjAnimator.SuctionDistance = Vector3.Distance(transform.position, GameManager.Instance.PlayerTransform.position);
+        _prjAnimator.SuctionDistance = Vector3.Distance(transform.position, _observer.PlayerTransform.position);
         _prjAnimator.ToBlackhole = true;
         _prjAnimator.ToVacuum = false;
         _prjAnimator.enabled = true;
@@ -219,6 +220,10 @@ public abstract class Projectile : MonoBehaviour, ISuckable
         {
             Explode(false);
         }
+    }
+    private void Awake()
+    {
+        _observer = Observer.Instance;
     }
     private void OnTriggerEnter(Collider other)
     {

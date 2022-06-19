@@ -32,7 +32,7 @@ public class HeadUI : MonoBehaviour
     private void Awake()
     {
         currentActivePanel = startGamePanel;
-        EventsPool.GameFinishedEvent.AddListener((bool w) => FinishGame(false));
+        EventsPool.GameFinishedEvent.AddListener((bool w) => FinishGame(w));
     }
     public void StartGame()
     {

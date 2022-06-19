@@ -15,6 +15,7 @@ public class DoubleRocket : Enemy
 
     private Projectile _projectileLeft;
     private Projectile _projectileRight;
+    private Vector3 _forwardPoint;
     protected override void StartChasing()
     {
         _navMeshAgent.isStopped = false;
@@ -52,14 +53,16 @@ public class DoubleRocket : Enemy
             _projectileDirection = _playerTransform.position - transform.position;
             _projectileDirection.y = 0;
 
+            _forwardPoint = transform.forward * (Vector3.Distance(_observer.PlayerTransform.position, transform.position) / 2);
+
             _projectileRight.Shoot((_projectileDirection + transform.right * 40).normalized * projectileSpeed,
                 new Bezier(_projectileRight.transform.position,
-                _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.Instance.PlayerTransform.position, transform.position) / 2)) + (transform.right * arcDistance),
-                GameManager.Instance.PlayerTransform.position));
+                _projectileRight.transform.position + _forwardPoint + (transform.right * arcDistance),
+                _observer.PlayerTransform.position));
             _projectileLeft.Shoot((_projectileDirection - transform.right * 40).normalized * projectileSpeed,
                 new Bezier(_projectileRight.transform.position,
-                _projectileRight.transform.position + (transform.forward * (Vector3.Distance(GameManager.Instance.PlayerTransform.position, transform.position)/2)) - (transform.right * arcDistance),
-                GameManager.Instance.PlayerTransform.position));
+                _projectileRight.transform.position + _forwardPoint - (transform.right * arcDistance),
+                _observer.PlayerTransform.position));
 
             _countdownCooldown = shootingCooldown;
             yield return new WaitForSeconds(_animator.GetNextAnimatorStateInfo(0).length);

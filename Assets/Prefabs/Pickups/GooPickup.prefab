@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8120932678266556555}
   - component: {fileID: 620633234}
-  - component: {fileID: 620633236}
   - component: {fileID: 620633235}
+  - component: {fileID: 6666032367445811660}
   m_Layer: 11
   m_Name: GooPickup
   m_TagString: Untagged
@@ -48,19 +48,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &620633236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8120932678266556554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e5ed25004935b1468b80894bbadd6f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SuctionDistance: 0
 --- !u!114 &620633235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,6 +61,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillType: 3
+--- !u!114 &6666032367445811660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8120932678266556554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e5ed25004935b1468b80894bbadd6f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SuctionDistance: 0
 --- !u!1 &8120932679431782098
 GameObject:
   m_ObjectHideFlags: 0

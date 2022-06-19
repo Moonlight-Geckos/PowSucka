@@ -43,6 +43,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     protected Vector3 _projectileDirection;
     protected Vector3 _position;
     protected Vector3 _originalScale;
+    protected Observer _observer;
 
     private float _suctionDistance;
     private float _curDis;
@@ -58,19 +59,6 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     private float _radius;
     private void Awake()
     {
-        _navMeshAgent = GetComponent<NavMeshAgent>();
-        _animator = GetComponent<Animator>();
-        _materials = new List<Material>();
-        _originalColors = new List<Color>();
-
-        foreach (Renderer rend in _animator.GetComponentsInChildren<Renderer>())
-        {
-            _materials.AddRange(rend.materials);
-            foreach (Material material in rend.materials)
-            {
-                _originalColors.Add(material.color);
-            }
-        }
         _damageTimer = TimersPool.Pool.Get();
         _damageTimer.Duration = 0.5f;
         _damageTimer.AddTimerFinishedEventListener(() =>
@@ -87,6 +75,11 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     }
     private void Update()
     {
+        if (!_observer.Started)
+        {
+            Explode();
+            return;
+        }
         if (_blackholed)
         {
             ScaleWithBlackhole();
@@ -145,6 +138,24 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     }
     public virtual void Initialize()
     {
+        if (_navMeshAgent == null)
+        {
+            _navMeshAgent = GetComponent<NavMeshAgent>();
+            _animator = GetComponent<Animator>();
+            _materials = new List<Material>();
+            _originalColors = new List<Color>();
+            _observer = Observer.Instance;
+
+            foreach (Renderer rend in _animator.GetComponentsInChildren<Renderer>())
+            {
+                _materials.AddRange(rend.materials);
+                foreach (Material material in rend.materials)
+                {
+                    _originalColors.Add(material.color);
+                }
+            }
+        }
+        _playerTransform = _observer.PlayerTransform;
         _isShooting = false;
         _blackholed = false;
         _currenthealth = maxHealth;
@@ -152,7 +163,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
         _countdownCooldown = 0;
         _coroutineRunning = false;
         _navMeshAgent.isStopped = false;
-        _playerTransform = GameManager.Instance.PlayerTransform;
+        _observer = Observer.Instance;
         _navMeshAgent.destination = _playerTransform.position;
         transform.localScale = _originalScale;
         for (int i = 0; i < _materials.Count; i++)
@@ -168,7 +179,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
         StopAllCoroutines();
         EventsPool.EnemyBlackholed.Invoke();
         _blackholed = true;
-        _suctionDistance = Vector3.Distance(transform.position, GameManager.Instance.PlayerTransform.position);
+        _suctionDistance = Vector3.Distance(transform.position, _observer.PlayerTransform.position);
     }
     public void GetDamage(float damage, float cooldown = -1)
     {
@@ -199,7 +210,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
             Vector3.one,
             Vector3.zero,
             Mathf.Clamp(
-                1.2f - (Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position) / _suctionDistance),
+                1.2f - (Vector3.Distance(transform.position, _observer.VacuumTransform.position) / _suctionDistance),
                 0, 1)
             );
         if (_newScale.x < transform.localScale.x) transform.localScale = _newScale;
@@ -208,7 +219,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     }
     protected void MoveToBlackhole()
     {
-        _direction = (GameManager.Instance.PlayerTransform.position - transform.position);
+        _direction = (_observer.PlayerTransform.position - transform.position);
         _direction.y = 0;
         _direction = (Quaternion.Euler(0, -55, 0) * _direction).normalized;
         transform.Translate(_direction * _curDis, Space.World);

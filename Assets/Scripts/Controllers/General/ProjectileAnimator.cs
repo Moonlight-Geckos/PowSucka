@@ -15,9 +15,11 @@ public class ProjectileAnimator : MonoBehaviour
     private Vector3 _newScale;
     private Vector3 _direction;
     private float _curDis;
+    private Observer _observer;
     private void Awake()
     {
         _trailRenderer = GetComponentInChildren<TrailRenderer>();
+        _observer = Observer.Instance;
         _curDis = GameManager.Instance.SuctionVelocity * Time.deltaTime;
         ToBlackhole = false;
         ToVacuum = false;
@@ -41,7 +43,7 @@ public class ProjectileAnimator : MonoBehaviour
             Vector3.one,
             Vector3.zero,
             Mathf.Clamp(
-                1.2f - (Vector3.Distance(transform.position, GameManager.Instance.VacuumTransform.position) / SuctionDistance),
+                1.2f - (Vector3.Distance(transform.position, _observer.VacuumTransform.position) / SuctionDistance),
                 0, 1)
             );
         if (_newScale.x < transform.localScale.x) transform.localScale = _newScale;
@@ -50,7 +52,7 @@ public class ProjectileAnimator : MonoBehaviour
     }
     private void MoveToVacuum()
     {
-        transform.Translate((GameManager.Instance.VacuumTransform.position - transform.position).normalized * _curDis, Space.World);
+        transform.Translate((_observer.VacuumTransform.position - transform.position).normalized * _curDis, Space.World);
         transform.rotation = Quaternion.LookRotation(_direction.normalized, Vector3.up);
     }
     private void ScaleWithBlackHole()
@@ -66,7 +68,7 @@ public class ProjectileAnimator : MonoBehaviour
     }
     private void MoveToBlackHole()
     {
-        _direction = Quaternion.Euler(0, -65, 0) * (GameManager.Instance.PlayerTransform.position - transform.position);
+        _direction = Quaternion.Euler(0, -65, 0) * (_observer.PlayerTransform.position - transform.position);
         transform.Translate(_direction.normalized * _curDis, Space.World);
         transform.rotation = Quaternion.LookRotation(_direction.normalized, Vector3.up);
     }

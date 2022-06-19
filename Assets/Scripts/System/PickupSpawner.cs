@@ -30,6 +30,7 @@ public class PickupSpawner : MonoBehaviour
     private float _randomAngle;
     private int _lastPickup;
     private int _pickupsOnGround = 0;
+    private Observer _observer;
 
     public static PickupSpawner Instance
     {
@@ -46,6 +47,7 @@ public class PickupSpawner : MonoBehaviour
             _instance = this;
             _spawnTimer = TimersPool.Pool.Get();
             _spawnTimer.Duration = spawnInterval;
+            _observer = Observer.Instance;
             _spawnTimer.AddTimerFinishedEventListener(Spawn);
             EventsPool.PickedupObjectEvent.AddListener((FillType f) =>
             {
@@ -64,7 +66,7 @@ public class PickupSpawner : MonoBehaviour
     {
         if (_pickupsOnGround >= maxPickupsOnGround)
             return;
-        _centerPosition = GameManager.Instance.PlayerTransform.position;
+        _centerPosition = _observer.PlayerTransform.position;
         _randomAngle = UnityEngine.Random.Range(-Mathf.PI, Mathf.PI);
         _centerPosition.x += spawnOffsetFromCharacter * Mathf.Cos(_randomAngle);
         if (Mathf.Rad2Deg * _randomAngle > 60 && Mathf.Rad2Deg * _randomAngle < 130)

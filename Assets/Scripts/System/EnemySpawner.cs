@@ -44,6 +44,7 @@ public class EnemySpawner : MonoBehaviour
     private float[] _currentProbablities;
     private float _currentInterval;
     private List<int> canSpawn = new List<int>();
+    private Observer _observer;
 
     public static EnemySpawner Instance
     {
@@ -58,6 +59,7 @@ public class EnemySpawner : MonoBehaviour
         else
         {
             _instance = this;
+            _observer = Observer.Instance;
             _spawnTimer = TimersPool.Pool.Get();
             _spawnTimer.Duration = startSpawnInterval;
             _currentProbablities = new float[spawnProbabilities.Length];
@@ -79,8 +81,8 @@ public class EnemySpawner : MonoBehaviour
         if (_enemiesOnGround >= maxEnemiesOnGround)
             return;
 
-        _currentInterval = Mathf.Lerp(startSpawnInterval, endSpawnInterval, 1 - GameManager.Instance.LeftEnemiesToKill / GameManager.Instance.EnemiesToKill);
-        _centerPosition = GameManager.Instance.PlayerTransform.position;
+        _currentInterval = Mathf.Lerp(startSpawnInterval, endSpawnInterval, 1 - _observer.LeftEnemiesToKill / GameManager.Instance.EnemiesToKill);
+        _centerPosition = _observer.PlayerTransform.position;
         _randomAngle = UnityEngine.Random.Range(-Mathf.PI, Mathf.PI);
         _centerPosition.x += spawnOffsetFromCharacter * Mathf.Cos(_randomAngle);
         if (Mathf.Rad2Deg * _randomAngle > 60 && Mathf.Rad2Deg * _randomAngle < 130)

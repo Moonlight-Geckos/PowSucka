@@ -911,6 +911,9 @@ MonoBehaviour:
   materialsToChange:
   - {fileID: 2100000, guid: 68c790b6e4b83a447ba074f17001a8b5, type: 2}
   weaponModeColor: {r: 0.20613791, g: 0.732, b: 0.22296554, a: 1}
+  explosionParticleSystem: {fileID: 6174616323914942841, guid: 7359daca1702b8f4c927662d6f55981c,
+    type: 3}
+  _liquidFill: {fileID: 0}
 --- !u!1 &5676196800887668539
 GameObject:
   m_ObjectHideFlags: 0

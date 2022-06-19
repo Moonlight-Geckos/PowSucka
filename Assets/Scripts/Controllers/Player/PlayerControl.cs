@@ -26,6 +26,12 @@ public class PlayerControl : MonoBehaviour
         _joystick = FindObjectOfType<Joystick>();
         _mainRigidbody = GetComponent<Rigidbody>();
         _character = GameObject.FindGameObjectWithTag("Character").transform;
+        EventsPool.GameFinishedEvent.AddListener(
+            (bool w) =>
+            {
+                enabled = false;
+                _mainRigidbody.velocity = Vector3.zero;
+            });
     }
 
     private void Update()

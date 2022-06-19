@@ -65,15 +65,18 @@ public abstract class GenericMonoBehaviourPool<T> : ScriptableObject
     }
     protected virtual void OnReturnedToPool(T obj)
     {
-        obj.gameObject.SetActive(false);
+        if (obj != null)
+            obj.gameObject.SetActive(false);
     }
     protected virtual void OnTakeFromPool(T obj)
     {
-        obj.gameObject.SetActive(true);
+        if (obj != null)
+            obj.gameObject.SetActive(true);
     }
     protected virtual void OnDestroyPoolObject(T obj)
     {
-        Destroy(obj.gameObject);
+        if(obj != null)
+            Destroy(obj.gameObject);
     }
     protected virtual private void ClearPool()
     {

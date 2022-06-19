@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class SkinController : MonoBehaviour
 {
@@ -11,7 +12,10 @@ public class SkinController : MonoBehaviour
     [SerializeField]
     private Color weaponModeColor;
 
-    public Transform _liquidFill;
+    [SerializeField]
+    private GameObject explosionParticleSystem;
+
+    private Transform _liquidFill;
     private Animator _storageAnimator;
     private Animator _animator;
     private List<int> _chosenMaterials;
@@ -19,12 +23,13 @@ public class SkinController : MonoBehaviour
     private List<Color> _originalColors;
     private GameObject _suctionParticles;
 
-    void Start()
+    void Awake()
     {
         Initialize();
         EventsPool.ChangePhaseEvent.AddListener(AnimateWeaponMode);
         EventsPool.PlayerChangedMovementEvent.AddListener(Run);
         EventsPool.PickedupObjectEvent.AddListener(PickupProjectile);
+        EventsPool.GameFinishedEvent.AddListener(AnimateFinish);
     }
     private void OnEnable()
     {
@@ -79,14 +84,6 @@ public class SkinController : MonoBehaviour
         }
         StartCoroutine(getHit());
     }
-    private void Run(bool isRunning)
-    {
-        try
-        {
-            _animator.SetBool("Running", isRunning);
-        }
-        catch { }
-    }
     private void AnimateWeaponMode(bool weaponMode)
     {
         IEnumerator weaponmode()
@@ -140,6 +137,33 @@ public class SkinController : MonoBehaviour
             StartCoroutine(weaponmode());
         else
             StartCoroutine(normal());
+    }
+    private void AnimateFinish(bool win)
+    {
+        GetComponent<RigBuilder>().enabled = false;
+        _suctionParticles.transform.parent.gameObject.SetActive(false);
+        if (win)
+        {
+            _animator.SetBool("Dance", true);
+        }
+        else
+        {
+            _animator.SetBool("Dead", true);
+            if (!_animator.GetBool("Dead"))
+            {
+                var r = Instantiate(explosionParticleSystem);
+                r.transform.position = transform.position;
+                gameObject.SetActive(false);
+            }
+        }
+    }
+    private void Run(bool isRunning)
+    {
+        try
+        {
+            _animator.SetBool("Running", isRunning);
+        }
+        catch { }
     }
     private void PickupProjectile(FillType prj)
     {

@@ -11,7 +11,7 @@ public class VacuumFillBar : ProgressBar
     }
     private void AddToVacum(FillType y)
     {
-        if (y == FillType.Diamond)
+        if (y == FillType.Diamond || Observer.weaponMode)
             return;
         byte val = StaticValues.GetFillPercent(y);
         UpdateValue(slider.value + val / 100f);

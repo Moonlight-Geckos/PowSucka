@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 public class AvatarController : MonoBehaviour, IDamagable
 {
@@ -10,13 +7,13 @@ public class AvatarController : MonoBehaviour, IDamagable
     private HealthBar _healthBar;
     private SkinController _skinController;
     private float _currentHP;
+    private Observer _observer;
 
     private void Awake()
     {
-        Initialize();
         _currentHP = maxHealth;
+        _observer = Observer.Instance;
         EventsPool.EnemyDiedEvent.AddListener(Heal);
-        EventsPool.GameFinishedEvent.AddListener(FinishGame);
     }
 
     private void OnEnable()
@@ -30,24 +27,23 @@ public class AvatarController : MonoBehaviour, IDamagable
     }
     public void GetDamage(float damage, float cooldown = -1)
     {
-        if (damage <= 0)
+        if (damage <= 0 || _currentHP <= 0)
             return;
         _currentHP -= damage;
         _healthBar.UpdateValue(_currentHP / 100f);
-        StopAllCoroutines();
         _skinController.AnimateHit();
+        if (_currentHP <= 0)
+            EventsPool.GameFinishedEvent.Invoke(false);
     }
     private void Heal()
     {
+        if (!_observer.Started)
+            return;
         if(_currentHP < 100)
         {
             _currentHP+=4;
             _healthBar.UpdateValue(_currentHP / 100f);
         }
-    }
-    private void FinishGame(bool win)
-    {
-        
     }
     public void StopDamage() { }
 

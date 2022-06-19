@@ -11,54 +11,27 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float suctionVelocity = 30;
 
+    [SerializeField]
+    private GameObject spawnersObject;
+
     #endregion
 
     #region Private
 
-    private static Transform _playerTransform;
-    private static Transform _vacuumTransform;
     private static GameManager _instance;
-    private static MonoBehaviour[] _systemScripts;
+
     private static int _collectedGems;
-    private static int _leftEnemiesToKill;
-    private static bool _started;
-    private static bool _finished;
     private static float _timeSinceStarted = 0;
+    private static Observer _observer;
 
     #endregion
     static public GameManager Instance
     {
         get { return _instance; }
     }
-    public Transform PlayerTransform
-    {
-        get { return _playerTransform; }
-    }
-    public Transform VacuumTransform
-    {
-        get { return _vacuumTransform; }
-    }
-    public bool Started
-    {
-        get { return _started; }
-        set { _started = value; }
-    }
-    public bool Finished
-    {
-        get { return _finished; }
-        set { _finished = value; }
-    }
-    public float TimeSinceStarted
-    {
-        get { return _timeSinceStarted; }
-    }
     public int EnemiesToKill
     {
         get { return enemiesToKill; }
-    }
-    public int LeftEnemiesToKill
-    {
-        get { return _leftEnemiesToKill; }
     }
     public int CollectedGems
     {
@@ -74,6 +47,10 @@ public class GameManager : MonoBehaviour
             return suctionVelocity;
         }
     }
+    public float TimeSinceStarted
+    {
+        get { return _timeSinceStarted; }
+    }
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -83,41 +60,34 @@ public class GameManager : MonoBehaviour
         else
         {
             _instance = this;
-            _started = false;
-            _timeSinceStarted = 0;
-            _systemScripts = GetComponents<MonoBehaviour>();
-            foreach(var script in _systemScripts)
-            {
-                if(script != this)
-                    script.enabled = false;
-            }
-            _leftEnemiesToKill = enemiesToKill;
             _collectedGems = PlayerStorage.CoinsCollected;
+            EventsPool.ClearPoolsEvent.Invoke();
             EventsPool.PickedupObjectEvent.AddListener(CollectGem);
             EventsPool.GameStartedEvent.AddListener(StartGame);
-            EventsPool.EnemyDiedEvent.AddListener(EnemyDied);
+            EventsPool.GameFinishedEvent.AddListener(FinishGame);
         }
     }
     private void Start()
     {
         EventsPool.UpdateUIEvent.Invoke();
+        _observer = Observer.Instance;
+
     }
     void Update()
     {
-        if (!_started)
+        if (!_observer.Started)
             return;
         TimersPool.UpdateTimers(Time.deltaTime);
         _timeSinceStarted += Time.deltaTime;
     }
     private void StartGame()
     {
-        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        _vacuumTransform = GameObject.FindGameObjectWithTag("Vacuum").transform;
-        foreach (var script in _systemScripts)
-        {
-            script.enabled = true;
-        }
-        _started = true;
+        spawnersObject.SetActive(true);
+    }
+    private void FinishGame(bool w)
+    {
+        spawnersObject.SetActive(false);
+        EventsPool.ClearPoolsEvent.Invoke();
     }
     private void CollectGem(FillType t)
     {
@@ -126,13 +96,6 @@ public class GameManager : MonoBehaviour
         _collectedGems++;
         PlayerStorage.CoinsCollected = _collectedGems;
         EventsPool.UpdateUIEvent.Invoke();
-    }
-    private void EnemyDied()
-    {
-        _leftEnemiesToKill--;
-        EventsPool.UpdateUIEvent.Invoke();
-        if (_leftEnemiesToKill <= 0)
-            EventsPool.GameFinishedEvent.Invoke(true);
     }
     public void AddGem()
     {
