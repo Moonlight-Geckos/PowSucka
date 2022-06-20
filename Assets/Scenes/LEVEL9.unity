@@ -3060,8 +3060,8 @@ MonoBehaviour:
     endProbablity: 1.5
     enemyPool: {fileID: 11400000, guid: 9e029fb058d5b6e43a557a66469146ae, type: 2}
   bossPrefab: {fileID: 0}
-  startSpawnInterval: 2
-  endSpawnInterval: 12
+  startSpawnInterval: 3
+  endSpawnInterval: 1.5
   spawnOffsetFromCharacter: 85
 --- !u!4 &595822246
 Transform:
@@ -9862,7 +9862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbee1cf8b1652004b90db272f25a5d1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemiesToKill: 30
+  enemiesToKill: 40
   suctionVelocity: 60
   spawnersObject: {fileID: 595822243}
 --- !u!114 &1874628178

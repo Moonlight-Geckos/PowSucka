@@ -3061,8 +3061,8 @@ MonoBehaviour:
     enemyPool: {fileID: 11400000, guid: 9e029fb058d5b6e43a557a66469146ae, type: 2}
   bossPrefab: {fileID: 8993811496242994179, guid: 12df47f900eb9bf49b1f6eca6aa2d353,
     type: 3}
-  startSpawnInterval: 2
-  endSpawnInterval: 15
+  startSpawnInterval: 4
+  endSpawnInterval: 1
   spawnOffsetFromCharacter: 80
 --- !u!4 &595822246
 Transform:
