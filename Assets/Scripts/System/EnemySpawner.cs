@@ -25,6 +25,9 @@ public class EnemySpawner : MonoBehaviour
     private EnemySpawnInst[] spawnProbabilities;
 
     [SerializeField]
+    private GameObject bossPrefab;
+
+    [SerializeField]
     private float startSpawnInterval = 2;
 
     [SerializeField]
@@ -38,11 +41,11 @@ public class EnemySpawner : MonoBehaviour
     private static EnemySpawner _instance;
     private static Timer _spawnTimer;
     private int _enemiesOnGround;
-    private Enemy _enemy;
-    private Vector3 _centerPosition;
     private float _randomAngle;
     private float[] _currentProbablities;
     private float _currentInterval;
+    private Enemy _enemy;
+    private Vector3 _centerPosition;
     private List<int> canSpawn = new List<int>();
     private Observer _observer;
 
@@ -70,6 +73,7 @@ public class EnemySpawner : MonoBehaviour
                     _spawnTimer.Run();
                 _enemiesOnGround--;
             });
+            EventsPool.SpawnBossEvent.AddListener(BossSpawn);
         }
     }
     private void Start()
@@ -132,6 +136,36 @@ public class EnemySpawner : MonoBehaviour
 
         _enemiesOnGround++;
         _spawnTimer.Run();
+    }
+
+    void BossSpawn()
+    {
+        if(bossPrefab == null && _observer.Started)
+        {
+            EventsPool.GameFinishedEvent.Invoke(true);
+        }
+        else
+        {
+            _centerPosition = _observer.PlayerTransform.position;
+            _randomAngle = UnityEngine.Random.Range(-Mathf.PI, Mathf.PI);
+            _centerPosition.x += spawnOffsetFromCharacter * Mathf.Cos(_randomAngle);
+            if (Mathf.Rad2Deg * _randomAngle > 60 && Mathf.Rad2Deg * _randomAngle < 130)
+                _centerPosition.z += 2 * spawnOffsetFromCharacter * Mathf.Sin(_randomAngle);
+            else
+                _centerPosition.z += spawnOffsetFromCharacter * Mathf.Sin(_randomAngle);
+
+            if (_centerPosition.x <= -WorldLimits.XLimits)
+                _centerPosition.x += spawnOffsetFromCharacter * 2;
+            else if (_centerPosition.x >= WorldLimits.XLimits)
+                _centerPosition.x -= spawnOffsetFromCharacter * 2;
+            if (_centerPosition.z <= -WorldLimits.ZLimits)
+                _centerPosition.z += spawnOffsetFromCharacter * 2;
+            else if (_centerPosition.z >= WorldLimits.ZLimits)
+                _centerPosition.z -= spawnOffsetFromCharacter * 4;
+
+            Instantiate(bossPrefab, _centerPosition, Quaternion.identity);
+
+        }
     }
     private void OnValidate()
     {

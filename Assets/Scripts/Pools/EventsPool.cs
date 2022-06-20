@@ -5,6 +5,7 @@ public static class EventsPool
     public readonly static UnityEvent GameStartedEvent = new UnityEvent();
     public readonly static UnityEvent<bool> GameFinishedEvent = new UnityEvent<bool>();
 
+    public readonly static UnityEvent SpawnBossEvent = new UnityEvent();
 
     public readonly static UnityEvent<FillType> PickedupObjectEvent = new UnityEvent<FillType>();
     public readonly static UnityEvent EnemyDiedEvent = new UnityEvent();

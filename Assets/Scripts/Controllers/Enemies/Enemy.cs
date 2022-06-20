@@ -110,7 +110,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     {
         Triggered(other);
     }
-    protected void Triggered(Collider other)
+    protected virtual void Triggered(Collider other)
     {
         if (other.gameObject.layer == StaticValues.BlackHoleLayer)
         {
@@ -129,7 +129,8 @@ public abstract class Enemy : MonoBehaviour, IDamagable
     {
         StopAllCoroutines();
         GetComponent<IDisposable>()?.Dispose();
-        EventsPool.EnemyDiedEvent.Invoke();
+        if (_observer.Started)
+            EventsPool.EnemyDiedEvent.Invoke();
     }
     protected virtual void Explode()
     {
@@ -141,7 +142,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
         if (_navMeshAgent == null)
         {
             _navMeshAgent = GetComponent<NavMeshAgent>();
-            _animator = GetComponent<Animator>();
+            _animator = GetComponentInChildren<Animator>();
             _materials = new List<Material>();
             _originalColors = new List<Color>();
             _observer = Observer.Instance;
@@ -181,26 +182,27 @@ public abstract class Enemy : MonoBehaviour, IDamagable
         _blackholed = true;
         _suctionDistance = Vector3.Distance(transform.position, _observer.PlayerTransform.position);
     }
-    public void GetDamage(float damage, float cooldown = -1)
+    public virtual void GetDamage(float damage, float cooldown = -1)
     {
-        if (damage == -1 || _currenthealth <= 0)
+        if (damage <= 0 || _currenthealth <= 0)
             return;
         _currenthealth-=damage;
 
-        _countdownCooldown = 0.5f;
-        _takingDamage = damage;
 
         if (_currenthealth <= 0)
             Explode();
         else
         {
             AnimateHit();
-            if(cooldown >= 0)
+            if (cooldown > -1)
+            {
+                _takingDamage = damage;
                 _damageTimer.Duration = cooldown;
+            }
             _damageTimer.Run();
         }
     }
-    public void StopDamage()
+    public virtual void StopDamage()
     {
         _takingDamage = -1;
     }

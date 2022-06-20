@@ -124,8 +124,8 @@ Shader "Custom/SlimeShader"
                 float remNoise2 = Unity_Remap_float2(noise, float2(-1, 1), float2(0, 1)) * _WaveSize;
                 v.vertex.xz += remNoise;
                 v.normal.xyz *= remNoise2;
-                o.viewDir = normalize(WorldSpaceViewDir(v.vertex));
-                o.normal = v.normal;
+                o.viewDir = normalize(ObjSpaceViewDir(v.vertex));
+                o.normal = normalize(mul(unity_ObjectToWorld, v.normal));
                 o.uv_MainTex = v.texcoord;
             }
 

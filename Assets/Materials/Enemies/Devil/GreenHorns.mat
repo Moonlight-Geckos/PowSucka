@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GooMaterial
-  m_Shader: {fileID: 4800000, guid: 90f6b7a065c3def4593715aea68aead9, type: 3}
+  m_Name: GreenHorns
+  m_Shader: {fileID: 4800000, guid: bf923f007d9356540b5b69175fc46d74, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -62,25 +62,21 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FresnelPower: 2.59
+    - _FresnelPower: 0.35
     - _GlossMapScale: 1
-    - _Glossiness: 0.254
+    - _Glossiness: 0.121
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 0.172
     - _Mode: 0
-    - _NoiseScale: 0.5
-    - _NoiseSpeed: 5.57
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RandomNum: 0.68
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaveSize: 0.075
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0.12709105, g: 1, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 0.14366879, g: 0.8773585, b: 0.0033107214, a: 1}
+    - _FresnelColor: {r: 0.46414757, g: 0, b: 0.7169812, a: 1}
   m_BuildTextureStacks: []

@@ -1,5 +1,7 @@
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 Shader "Custom/FresnelShader"
 {
     Properties
@@ -38,11 +40,8 @@ Shader "Custom/FresnelShader"
         fixed4 _Color;
         fixed4 _FresnelColor;
 
-        // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
-        // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
-        // #pragma instancing_options assumeuniformscaling
         UNITY_INSTANCING_BUFFER_START(Props)
-            // put more per-instance properties here
+
         UNITY_INSTANCING_BUFFER_END(Props)
             inline float unity_noise_randomValue(float2 uv)
         {
@@ -101,14 +100,15 @@ Shader "Custom/FresnelShader"
         }
         float Unity_FresnelEffect_float(float3 Normal, float3 ViewDir, float Power)
         {
-            float Out = pow((1.0 - saturate(dot(normalize(Normal), normalize(ViewDir)))), Power);
+            float Out = pow((1.0 - saturate(dot(Normal, ViewDir))), Power);
             return Out;
         }
 
         void vert(inout appdata_full v, out Input o) {
             UNITY_INITIALIZE_OUTPUT(Input, o);
-            o.viewDir = normalize(WorldSpaceViewDir(v.vertex));
-            o.normal = v.normal;
+            float3 dir = v.vertex;
+            o.viewDir = normalize(ObjSpaceViewDir(v.vertex));
+            o.normal = normalize(mul(unity_ObjectToWorld, v.normal));
         }
 
         void surf (Input IN, inout SurfaceOutputStandard o)

@@ -11,6 +11,7 @@ public class Observer : MonoBehaviour
     private static Transform _vacuumTransform;
     private static int _leftEnemiesToKill;
     private static bool _started;
+    private static bool _bossSpawned;
     private static bool _finished;
 
     public int LeftEnemiesToKill
@@ -53,6 +54,7 @@ public class Observer : MonoBehaviour
             _started = false;
             weaponMode = false;
             playerMoving = false;
+            _bossSpawned = false;
             _leftEnemiesToKill = GameManager.Instance.EnemiesToKill;
             EventsPool.PlayerChangedMovementEvent.AddListener((bool m) => playerMoving = m);
             EventsPool.ChangePhaseEvent.AddListener((bool wm) => weaponMode = wm);
@@ -74,11 +76,14 @@ public class Observer : MonoBehaviour
     }
     private void EnemyDied()
     {
-        if (!_started)
+        if (!_started || _bossSpawned)
             return;
         _leftEnemiesToKill--;
         EventsPool.UpdateUIEvent.Invoke();
-        if (_leftEnemiesToKill <= 0)
-            EventsPool.GameFinishedEvent.Invoke(true);
+        if (_leftEnemiesToKill <= 0) 
+        {
+            _bossSpawned = true;
+            EventsPool.SpawnBossEvent.Invoke();
+        }
     }
 }

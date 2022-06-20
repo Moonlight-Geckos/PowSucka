@@ -11,7 +11,6 @@ public class GooProjectile : Projectile
 
     private bool _active = false;
     private Timer _activeTimer;
-
     private void OnTriggerExit(Collider other)
     {
         other.GetComponent<IDamagable>()?.StopDamage();

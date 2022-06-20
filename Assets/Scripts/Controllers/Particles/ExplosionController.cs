@@ -7,6 +7,5 @@ public class ExplosionController : ParticleSystemController
     {
         var t = other.GetComponent<IDamagable>();
         t?.GetDamage(_damage);
-        t?.StopDamage();
     }
 }

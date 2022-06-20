@@ -99,8 +99,8 @@ Shader "Custom/Souls Shader"
 
             void vert(inout appdata_full v, out Input o) {
                 UNITY_INITIALIZE_OUTPUT(Input, o);
-                o.viewDir = normalize(WorldSpaceViewDir(v.vertex));
-                o.normal = v.normal;
+                o.viewDir = normalize(ObjSpaceViewDir(v.vertex));
+                o.normal = normalize(mul(unity_ObjectToWorld, v.normal));
                 o.uv_MainTex = v.texcoord;
             }
 
