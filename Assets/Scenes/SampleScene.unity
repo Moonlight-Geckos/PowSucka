@@ -2538,6 +2538,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 630063043949471908, guid: dff38747b96ab90458d4a15a324f5ecc,
+        type: 3}
+      propertyPath: m_margin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 630063043949471908, guid: dff38747b96ab90458d4a15a324f5ecc,
+        type: 3}
+      propertyPath: m_margin.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3612784256273043701, guid: dff38747b96ab90458d4a15a324f5ecc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4525090062383157790, guid: dff38747b96ab90458d4a15a324f5ecc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8272041746818779304, guid: dff38747b96ab90458d4a15a324f5ecc,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2647,6 +2667,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 9145009527619193412, guid: dff38747b96ab90458d4a15a324f5ecc,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dff38747b96ab90458d4a15a324f5ecc, type: 3}
@@ -9838,7 +9863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbee1cf8b1652004b90db272f25a5d1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemiesToKill: 1
+  enemiesToKill: 50
   suctionVelocity: 60
   spawnersObject: {fileID: 595822243}
 --- !u!114 &1874628178

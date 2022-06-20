@@ -10,6 +10,7 @@ public static class StaticValues
     private static byte _gooFillPercent = 5;
 
     public readonly static int EnemyLayer = LayerMask.NameToLayer("Enemy");
+    public readonly static int DevilLayer = LayerMask.NameToLayer("Devil");
     public readonly static int VacuumLayer = LayerMask.NameToLayer("Vacuum");
     public readonly static int BlackHoleLayer = LayerMask.NameToLayer("Blackhole");
     public readonly static int PlayerLayer = LayerMask.NameToLayer("Player");

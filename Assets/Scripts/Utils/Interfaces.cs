@@ -7,7 +7,7 @@ public interface IDisposable
 public interface IDamagable
 {
     public void GetDamage(float damage, float cooldown = -1);
-    public void StopDamage();
+    public void StopDamage(float damage);
 }
 public interface ISuckable
 {

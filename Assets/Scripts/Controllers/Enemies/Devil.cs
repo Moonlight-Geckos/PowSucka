@@ -24,14 +24,6 @@ public class Devil : Enemy
             other.GetComponent<IDamagable>().GetDamage(9999, 1);
         }
     }
-    public override void GetDamage(float damage, float cooldown = -1)
-    {
-        base.GetDamage(damage, cooldown);
-    }
-    public override void StopDamage()
-    {
-        _takingDamage = -1;
-    }
 
     protected override void StopChasing()
     {

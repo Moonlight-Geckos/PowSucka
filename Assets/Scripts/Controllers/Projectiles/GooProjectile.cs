@@ -13,7 +13,7 @@ public class GooProjectile : Projectile
     private Timer _activeTimer;
     private void OnTriggerExit(Collider other)
     {
-        other.GetComponent<IDamagable>()?.StopDamage();
+        other.GetComponent<IDamagable>()?.StopDamage(damage);
     }
     protected override void HitUnit(Collider other)
     {

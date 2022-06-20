@@ -4904,7 +4904,8 @@ MonoBehaviour:
   shootingCooldown: 0
   aimDuration: 0
   zAdditionalRadius: 0
-  explosionParticlesPool: {fileID: 0}
+  explosionParticlesPool: {fileID: 11400000, guid: 5e4f0a9176cac0c4aaca23ceb2b8010c,
+    type: 2}
   gizmosMesh: {fileID: 0}
 --- !u!195 &5183975044057730115
 NavMeshAgent:

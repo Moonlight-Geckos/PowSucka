@@ -25,6 +25,6 @@ public class DevilAura : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        unit?.StopDamage();
+        unit?.StopDamage(damagePerSecond);
     }
 }

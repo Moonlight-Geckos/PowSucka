@@ -203,7 +203,8 @@ public abstract class Projectile : MonoBehaviour, ISuckable
             GetBlackholed();
         }
         else if(other.gameObject.layer == StaticValues.PlayerLayer
-            || other.gameObject.layer == StaticValues.EnemyLayer)
+            || other.gameObject.layer == StaticValues.EnemyLayer
+            || other.gameObject.layer == StaticValues.DevilLayer)
         {
             if (_sucked || _blackholed || _shouldBlackhole || _shouldSuck)
             {

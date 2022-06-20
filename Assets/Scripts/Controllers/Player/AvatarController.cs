@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 public class AvatarController : MonoBehaviour, IDamagable
 {
@@ -9,12 +10,17 @@ public class AvatarController : MonoBehaviour, IDamagable
     private Observer _observer;
     private Timer _damageTimer;
     private float _currentHP;
-    private float _takingDamage;
+    private List<float> _takingDamage;
 
     private void Awake()
     {
+        _takingDamage = new List<float>();
         _damageTimer = TimersPool.Pool.Get();
-        _damageTimer.AddTimerFinishedEventListener(() => GetDamage(_takingDamage));
+        _damageTimer.AddTimerFinishedEventListener(() => {
+            foreach(float y in _takingDamage)
+                GetDamage(y);
+            _damageTimer.Run();
+        });
         _currentHP = maxHealth;
         _observer = Observer.Instance;
         EventsPool.EnemyDiedEvent.AddListener(Heal);
@@ -43,10 +49,10 @@ public class AvatarController : MonoBehaviour, IDamagable
         }
         else if (cooldown > -1)
         {
-            _takingDamage = damage;
+            _takingDamage.Add(damage);
             _damageTimer.Duration = cooldown;
+            _damageTimer.Run();
         }
-        _damageTimer.Run();
     }
     private void Heal()
     {
@@ -58,9 +64,9 @@ public class AvatarController : MonoBehaviour, IDamagable
             _healthBar.UpdateValue(_currentHP / 100f);
         }
     }
-    public void StopDamage() 
+    public void StopDamage(float damage) 
     {
-        _takingDamage = -1;
+        _takingDamage.Remove(damage);
     }
 
 }

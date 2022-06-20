@@ -17,7 +17,7 @@ public class ColliderWeaponController : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         var t = other.GetComponent<IDamagable>();
-        t?.StopDamage();
+        t?.StopDamage(damage);
     }
 
 }

@@ -33,7 +33,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
 
     protected float _currenthealth;
     protected bool _isShooting = false;
-    protected float _takingDamage = -1;
+    protected List<float> _takingDamage;
     protected bool _coroutineRunning = false;
     protected float _countdownCooldown;
     protected int _rand;
@@ -63,7 +63,9 @@ public abstract class Enemy : MonoBehaviour, IDamagable
         _damageTimer.Duration = 0.5f;
         _damageTimer.AddTimerFinishedEventListener(() =>
         {
-            GetDamage(_takingDamage);
+            foreach(float y in _takingDamage)
+                GetDamage(y);
+            _damageTimer.Run();
         });
 
         _originalScale = transform.localScale;
@@ -160,7 +162,7 @@ public abstract class Enemy : MonoBehaviour, IDamagable
         _isShooting = false;
         _blackholed = false;
         _currenthealth = maxHealth;
-        _takingDamage = -1;
+        _takingDamage = new List<float>();
         _countdownCooldown = 0;
         _coroutineRunning = false;
         _navMeshAgent.isStopped = false;
@@ -188,7 +190,6 @@ public abstract class Enemy : MonoBehaviour, IDamagable
             return;
         _currenthealth-=damage;
 
-
         if (_currenthealth <= 0)
             Explode();
         else
@@ -196,15 +197,15 @@ public abstract class Enemy : MonoBehaviour, IDamagable
             AnimateHit();
             if (cooldown > -1)
             {
-                _takingDamage = damage;
+                _takingDamage.Add(damage);
                 _damageTimer.Duration = cooldown;
+                _damageTimer.Run();
             }
-            _damageTimer.Run();
         }
     }
-    public virtual void StopDamage()
+    public virtual void StopDamage(float damage)
     {
-        _takingDamage = -1;
+        _takingDamage.Remove(damage);
     }
     protected void ScaleWithBlackhole()
     {
