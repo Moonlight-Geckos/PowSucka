@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.1807855, g: 0.22261508, b: 0.21110481, a: 1}
+  m_IndirectSpecularColor: {r: 0.18078557, g: 0.22261536, b: 0.21110502, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3448,8 +3448,8 @@ MonoBehaviour:
   pickupPools:
   - {fileID: 11400000, guid: 6b3c9910444641b4fb09a020a7a30a52, type: 2}
   - {fileID: 11400000, guid: e712a976f1de3b4458ea7f303c4c716c, type: 2}
-  spawnInterval: 0.5
-  spawnOffsetFromCharacter: 65
+  spawnInterval: 0.4
+  spawnOffsetFromCharacter: 50
 --- !u!114 &595822245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3468,15 +3468,15 @@ MonoBehaviour:
     endProbablity: 1
     enemyPool: {fileID: 11400000, guid: 01f29dc12d74aa64ea6881e9fe9e6db3, type: 2}
   - startProbablity: 0
-    endProbablity: 0
+    endProbablity: 0.5
     enemyPool: {fileID: 11400000, guid: 076cb8338644f8046a0d05933c3bedf3, type: 2}
   - startProbablity: 0
     endProbablity: 0
     enemyPool: {fileID: 11400000, guid: 9e029fb058d5b6e43a557a66469146ae, type: 2}
   bossPrefab: {fileID: 0}
-  startSpawnInterval: 5
-  endSpawnInterval: 3
-  spawnOffsetFromCharacter: 110
+  startSpawnInterval: 4
+  endSpawnInterval: 2
+  spawnOffsetFromCharacter: 100
 --- !u!4 &595822246
 Transform:
   m_ObjectHideFlags: 0

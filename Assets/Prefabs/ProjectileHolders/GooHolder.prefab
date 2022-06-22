@@ -79,12 +79,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillType: 3
-  damage: 10
+  damage: 8
   durationToExpire: 0.3
   arcRadius: 4
   explosionParticlesPool: {fileID: 0}
   onFlatScale: 8
-  onGroundDuration: 5
+  onGroundDuration: 7
 --- !u!1001 &3894744012109300509
 PrefabInstance:
   m_ObjectHideFlags: 0
