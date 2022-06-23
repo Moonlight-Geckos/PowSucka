@@ -47,7 +47,7 @@ public class AvatarController : MonoBehaviour, IDamagable
         if (damage <= 0 || _currentHP <= 0 || !_observer.Started)
             return;
         _currentHP -= damage;
-        _healthBar.UpdateValue(_currentHP / maxHealth);
+        _healthBar?.UpdateValue(_currentHP / maxHealth);
         _skinController.AnimateHit();
         if (_currentHP <= 0)
         {
@@ -68,7 +68,7 @@ public class AvatarController : MonoBehaviour, IDamagable
         if(_currentHP < maxHealth)
         {
             _currentHP+=4;
-            _healthBar.UpdateValue(_currentHP / maxHealth);
+            _healthBar?.UpdateValue(_currentHP / maxHealth);
         }
     }
     public void StopDamage(float damage) 
