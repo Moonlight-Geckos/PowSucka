@@ -76,6 +76,10 @@ public class VacuumController : MonoBehaviour
                 x1 = item.Key;
             }
         }
+        if(x == -1)
+        {
+            x1 = FillType.Bullet;
+        }
         Debug.Log(new Tuple<FillType, FillType>(x1, x2));
         ShootingType ds = StaticValues.Combinations[new Tuple<FillType, FillType>(x1, x2)];
         foreach(ShootingItem pair in shootingItems)
