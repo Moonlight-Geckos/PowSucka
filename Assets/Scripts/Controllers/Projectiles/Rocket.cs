@@ -17,7 +17,7 @@ public class Rocket : Projectile
                 if (!otherRocket.HasTriggered)
                 {
                     _triggered = true;
-                    EmitParticles(other.ClosestPoint(transform.position), true);
+                    EmitParticles(other.ClosestPoint(transform.position), true, false);
                 }
                 Expire();
             }

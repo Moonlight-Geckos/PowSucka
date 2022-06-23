@@ -11,19 +11,26 @@ public class AvatarController : MonoBehaviour, IDamagable
     private Timer _damageTimer;
     private float _currentHP;
     private List<float> _takingDamage;
+    private float _extraHealth;
 
     private void Awake()
     {
         _takingDamage = new List<float>();
         _damageTimer = TimersPool.Pool.Get();
         _damageTimer.AddTimerFinishedEventListener(() => {
-            foreach(float y in _takingDamage)
+            foreach (float y in _takingDamage)
                 GetDamage(y);
             _damageTimer.Run();
         });
         _currentHP = maxHealth;
         _observer = Observer.Instance;
         EventsPool.EnemyDiedEvent.AddListener(Heal);
+        EventsPool.GameStartedEvent.AddListener(() =>
+        {
+            _extraHealth = PlayerStorage.HealthUpgradeLevel * 2;
+            _currentHP += _extraHealth;
+            maxHealth += _extraHealth;
+        });
     }
 
     private void OnEnable()
@@ -40,7 +47,7 @@ public class AvatarController : MonoBehaviour, IDamagable
         if (damage <= 0 || _currentHP <= 0 || !_observer.Started)
             return;
         _currentHP -= damage;
-        _healthBar.UpdateValue(_currentHP / 100f);
+        _healthBar.UpdateValue(_currentHP / maxHealth);
         _skinController.AnimateHit();
         if (_currentHP <= 0)
         {
@@ -58,10 +65,10 @@ public class AvatarController : MonoBehaviour, IDamagable
     {
         if (!_observer.Started)
             return;
-        if(_currentHP < 100)
+        if(_currentHP < maxHealth)
         {
             _currentHP+=4;
-            _healthBar.UpdateValue(_currentHP / 100f);
+            _healthBar.UpdateValue(_currentHP / maxHealth);
         }
     }
     public void StopDamage(float damage) 

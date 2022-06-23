@@ -33,6 +33,7 @@ public abstract class Projectile : MonoBehaviour, ISuckable
     protected bool _shouldSuck = false;
     protected bool _shouldBlackhole = false;
     protected Observer _observer;
+    protected float _damageLevel;
 
     #region Curving
     Vector3 nextPos;
@@ -46,6 +47,7 @@ public abstract class Projectile : MonoBehaviour, ISuckable
     {
         get { return _rb.velocity.sqrMagnitude > 0; }
     }
+
 
     public virtual void Shoot(Vector3 velocity, Bezier bezierCurve = null)
     {
@@ -110,18 +112,20 @@ public abstract class Projectile : MonoBehaviour, ISuckable
     protected virtual void TimerFinished()
     {
         if(!_sucked && gameObject.activeSelf)
-            Explode(true);
+            Explode(true, gameObject.layer != StaticValues.ProjectileLayer);
     }
-    protected virtual void Explode(bool shouldDamage)
+    protected virtual void Explode(bool shouldDamage, bool extraDamage = false)
     {
-        EmitParticles(transform.position, shouldDamage);
+        EmitParticles(transform.position, shouldDamage, extraDamage);
         Expire();
     }
-    protected virtual void EmitParticles(Vector3 pos, bool shouldDamage)
+    protected virtual void EmitParticles(Vector3 pos, bool shouldDamage, bool extraDamage)
     {
         if (explosionParticlesPool != null)
         {
             var ps = explosionParticlesPool.Pool.Get();
+            float dmg = shouldDamage ? damage : 0;
+            dmg += extraDamage ? _damageLevel/3f : 0;
             ps.Initialize(shouldDamage ? damage : 0);
             ps.transform.position = pos;
         }
@@ -225,6 +229,7 @@ public abstract class Projectile : MonoBehaviour, ISuckable
     private void Awake()
     {
         _observer = Observer.Instance;
+        _damageLevel = PlayerStorage.DamageUpgradeLevel;
     }
     private void OnTriggerEnter(Collider other)
     {
