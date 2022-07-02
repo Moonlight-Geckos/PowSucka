@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -83,11 +84,16 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         spawnersObject.SetActive(true);
+        TinySauce.OnGameStarted(SceneManager.GetActiveScene().buildIndex.ToString());
     }
     private void FinishGame(bool w)
     {
         spawnersObject.SetActive(false);
         EventsPool.ClearPoolsEvent.Invoke();
+
+        TinySauce.OnGameFinished(Observer.Instance.LeftEnemiesToKill == 0,
+            EnemiesToKill - Observer.Instance.LeftEnemiesToKill,
+            SceneManager.GetActiveScene().buildIndex.ToString());
     }
     private void CollectGem(FillType t)
     {
